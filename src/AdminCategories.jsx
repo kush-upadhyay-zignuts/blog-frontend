@@ -14,7 +14,7 @@ const AdminCategories = () => {
     // Fetch categories from API on mount
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('/api/admin/categories');
+        const response = await axios.get('https://blog-backend-1-5vcb.onrender.com/api/admin/categories');
         setCategories(response.data); // Assume backend sends array of categories/blogs
       } catch (error) {
         console.error('Error fetching categories:', error);
