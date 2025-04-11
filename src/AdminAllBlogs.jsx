@@ -13,7 +13,7 @@ export default function AdminAllBlogs() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const res = await axios.get('/api/admin/blogs', { withCredentials: true });
+        const res = await axios.get(' https://blog-backend-1-5vcb.onrender.com/api/admin/blogs', { withCredentials: true });
         setBlogs(res.data); // assuming backend sends { blogs: [...] }
       } catch (err) {
         console.error("Error fetching blogs:", err);
