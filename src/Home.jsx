@@ -215,7 +215,7 @@ function Home() {
               style={{ width: "80rem" }}
             >
               <img
-                src={`http://localhost:5000${blog.imgUrl}`}
+                src={`https://blog-backend-1-5vcb.onrender.com${blog.imgUrl}`}
                 className="card-img-top"
                 style={{ width: "20rem", height: "15rem" }}
                 alt={blog.title}
