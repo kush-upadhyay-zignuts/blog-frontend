@@ -27,7 +27,7 @@ const Feedback = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/feedback', formData, {
+            await axios.post('https://blog-backend-1-5vcb.onrender.com/api/feedback', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
