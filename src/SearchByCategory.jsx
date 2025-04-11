@@ -1,0 +1,277 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import './index.css'
+import LeftMenu from "./LeftMenu";
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
+function Home() {
+  const [blogs, setBlogs] = useState([]);
+  const [categories,setCategories] = useState([])
+  const [catTitle,setCatTitle] = useState("")
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [input, setInput] = useState("");
+  const [isOpen,SetIsOpen] = useState(false)
+  const [user, setUser] = useState(""); // Assume you will fetch user info separately
+  const navigate = useNavigate()
+
+
+   useEffect(() => {
+        const loggedInUser = localStorage.getItem("LoggedInUser");
+        if (loggedInUser) {
+          setUser(loggedInUser);
+        }
+      }, []);
+
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch('/api/blogs');
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        console.log(data);
+        setBlogs(data.blogs);
+        setCategories(data.categories);
+        setFilteredBlogs(data.categories);
+      } catch (err) {
+        console.error('Error fetching blogs:', err.message);
+      }
+    };
+  
+    fetchBlogs();
+  }, []);
+  
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+    SetIsOpen(true);
+
+    if (value) {
+      const results = categories.filter((blog) =>
+        blog.title.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredBlogs(results);
+    } else {
+      setFilteredBlogs(categories);
+    }
+  };
+
+  const handleSelectSuggestion = (title) => {
+    setInput(title);
+    SetIsOpen(false)
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (input) {
+      // window.location.href = `/${input}`;
+    setCatTitle(input)
+      
+    //   navigate(`/${input}`)
+    }
+    else{
+        setCatTitle("")
+    }
+  };
+
+  return (
+    <div>
+      {/* Navbar */}
+      <nav className="navbar fixed-top navbar-expand-lg nav-color">
+        <div className="container-fluid">
+          <a className="navbar-brand text-info" href="#">
+            BlogVerse
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <div className="d-flex flex-column">
+                <form
+                  className="d-flex search"
+                  autoComplete="off"
+                  id="search-form"
+                  onSubmit={handleSearchSubmit}
+                >
+                  <input
+                    id="search"
+                    className="form-control me-2"
+                    type="search"
+                    placeholder="Search By Category"
+                    aria-label="Search"
+                    value={input}
+                    onChange={handleInputChange}
+                  />
+                  <button
+                    id="search-btn"
+                    className="btn btn-outline-success text-light"
+                    type="submit"
+                  >
+                    Search
+                  </button>
+                </form>
+
+                {/* Autocomplete Suggestions */}
+                {isOpen && (
+                  <ul id="autocomplete" className="autocomplete">
+                    
+                    {filteredBlogs.map((blog, idx) => (
+                      <li
+                        key={idx}
+                        onClick={() => handleSelectSuggestion(blog.title)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {blog.title}
+                      
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </ul>
+
+            {/* Login/Logout Dropdown */}
+            <div id="nav-dropdown"  style={{ width: "2rem", marginRight: "2rem" }} className="dropdown bg-transparent">
+             {!user ? <button
+                id="nav-dropdown-button"
+                className="btn text-white mr-5 dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Login
+              </button> :
+               <div 
+               id="nav-dropdown-button"
+               type="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false"
+                className="d-flex align-items-center dropdown-toggle btn justify-content-center rounded-circle bg-info text-white"
+                style={{
+                  width: `50px`,
+                  height: `50px`,
+                  fontSize: `25px`,
+                  fontWeight: "bold",
+                  
+                }}
+                 >
+         {user ? user.trim().split('')[0].toUpperCase() : "Login"}
+      </div > }
+              <ul
+                id="nav-ul"
+                style={{ width: "2rem", marginRight: "5rem" }}
+                className="dropdown-menu"
+              >
+                {user ? (
+                  <li >
+                    <a className="" href="/logout">
+                      Logout
+                    </a>
+                  </li>
+                ) : (
+                  <>
+                    <li>
+                      <a className="" href="/signup">
+                        Sign up
+                      </a>
+                    </li>
+                    <li>
+                      <a className="" href="/signin">
+                        Sign in
+                      </a>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <LeftMenu/>
+      {/* Left menu include (You can make it another component if needed) */}
+      {/* <LeftMenu /> */}
+
+      {/* Blog List */}
+      <div className="container" style={{marginTop:"6rem"}}>
+       { blogs
+    .filter(blog => !catTitle || blog.category === catTitle)
+    .map((blog, idx) => (
+       
+           <Link
+            to={`/${blog.title}`}
+            key={idx}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+             <div key={idx} style={{ textDecoration: "none", color: "inherit" }} >
+
+          
+            <div
+              className="d-flex mt-4 mx-auto align-items-center px-5"
+              style={{ width: "80rem" }}
+            >
+              <img
+                src={`http://localhost:5000${blog.imgUrl}`}
+                className="card-img-top"
+                style={{ width: "20rem", height: "15rem" }}
+                alt={blog.title}
+              />
+              <div className="card-body ms-5" style={{ width: "50rem" }}>
+                <h5 className="card-title">{blog.title}</h5>
+                <p className="card-text red overflow-hidden">{blog.description}</p>
+                <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+              </div>
+            </div>
+            </div> 
+            </Link>
+        )) }
+          {/*     
+           :(blogs.map((blog, idx) => (
+           <Link
+            to={`/${blog.title}`}
+            key={idx}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+             <div key={idx} style={{ textDecoration: "none", color: "inherit" }} >
+
+          
+            <div
+              className="d-flex mt-4 mx-auto align-items-center px-5"
+              style={{ width: "80rem" }}
+            >
+              <img
+                src={`http://localhost:5000${blog.imgUrl}`}
+                className="card-img-top"
+                style={{ width: "20rem", height: "15rem" }}
+                alt={blog.title}
+              />
+              <div className="card-body ms-5" style={{ width: "50rem" }}>
+                <h5 className="card-title">{blog.title}</h5>
+                <p className="card-text red overflow-hidden">{blog.description}</p>
+                <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+              </div>
+            </div>
+            </div> 
+          </Link>
+        )))} */}
+      </div>
+    </div>
+  );
+}
+
+export default Home;
