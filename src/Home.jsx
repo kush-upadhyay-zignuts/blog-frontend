@@ -18,7 +18,7 @@ function Home() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch('/api/blogs');
+        const res = await fetch('https://blog-backend-1-5vcb.onrender.com/api/blogs');
       
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
