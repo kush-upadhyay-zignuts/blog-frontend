@@ -18,7 +18,7 @@ export default function DeleteBlog() {
   useEffect(() => {
     async function fetchBlog() {
       try {
-        const res = await axios.get(`/api/admin/${id}/delete`, { withCredentials: true });
+        const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/delete`, { withCredentials: true });
         setBlog(res.data);
         console.log(res.data)
       } catch (err) {
@@ -32,7 +32,7 @@ export default function DeleteBlog() {
   async function handleDelete(e) {
     e.preventDefault();
     try {
-      await axios.delete(`/api/admin/${id}/delete`, { withCredentials: true });
+      await axios.delete(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/delete`, { withCredentials: true });
   toast.success("Blog is Deleted successfully!");
             setTimeout(() => {
                 navigate(-1); // or wherever you want after success
