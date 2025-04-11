@@ -20,7 +20,7 @@ const AdminDeleteCategories = () => {
     // Fetch the category to display
     const fetchCategory = async () => {
       try {
-        const response = await axios.get(`/api/admin/${id}/categories/delete`);
+        const response = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/categories/delete`);
         setCategory(response.data.title); // Assuming { category: "..." }
       } catch (error) {
         console.error('Error fetching category:', error);
@@ -33,7 +33,7 @@ const AdminDeleteCategories = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`/api/admin/${id}/categories/delete`);
+      await axios.post(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/categories/delete`);
   toast.success("Category Deleted successfully!");
             setTimeout(() => {
                 navigate(-1); // or wherever you want after success
