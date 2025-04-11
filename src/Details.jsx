@@ -87,7 +87,7 @@ export default function Details() {
   useEffect(() => {
     async function fetchBlog() {
       try {
-        const res = await axios.get(`/api/${title}`, {
+        const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/${title}`, {
           withCredentials: true,
         });
         setBlog(res.data.blog);
