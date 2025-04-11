@@ -63,7 +63,7 @@ export default function Signin() {
     const password = formData.get("password");
 
     try {
-      const response = await fetch("/api/signin", {
+      const response = await fetch("https://blog-backend-1-5vcb.onrender.com/api/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
