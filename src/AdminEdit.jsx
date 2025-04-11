@@ -26,7 +26,7 @@ export default function AdminEdit() {
   useEffect(() => {
     async function fetchBlog() {
       try {
-        const res = await axios.get(`/api/admin/${id}/edit`, { withCredentials: true });
+        const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/edit`, { withCredentials: true });
        const data = res.data;
         console.log(res.data)
         setBlog({
@@ -65,7 +65,7 @@ export default function AdminEdit() {
     }
 
     try {
-      await axios.put(`/api/admin/${id}/edit`, formData , {
+      await axios.put(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/edit`, formData , {
         headers: {
           "Content-Type": "multipart/form-data",
         },
