@@ -161,7 +161,7 @@ export default function SignUp() {
     //     },
     //     body: JSON.stringify(formData),
     //   });
-      const response = await axios.post(`/api/signup`, formData, {withCredentials: true});
+      const response = await axios.post(`https://blog-backend-1-5vcb.onrender.com/api/signup`, formData, {withCredentials: true});
             if(response){
 
                 navigate("/blogs")
