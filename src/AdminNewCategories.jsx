@@ -19,10 +19,10 @@ const AdminNewCategories = () => {
     e.preventDefault();
 
     try {
-      await axios.post('/api/admin/categories/new', { category });
+      await axios.post('https://blog-backend-1-5vcb.onrender.com/api/admin/categories/new', { category });
        toast.success("Category Added successfully!");
                   setTimeout(() => {
-                      navigate("/blogs"); // or wherever you want after success
+                      navigate("/blogs"); // or wherever you want after success..
                   }, 2000);
     } catch (error) {
       console.error('Error adding new category:', error);
