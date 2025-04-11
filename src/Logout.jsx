@@ -42,7 +42,7 @@ const Logout = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get('/api/logout', { withCredentials: true });
+      await axios.get('https://blog-backend-1-5vcb.onrender.com/api/logout', { withCredentials: true });
       localStorage.removeItem("LoggedInUser");
       localStorage.removeItem("CurrentUserRole");
       navigate('/blogs');
