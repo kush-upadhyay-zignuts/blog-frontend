@@ -18,7 +18,7 @@ const AdminFeedback = () => {
     useEffect(() => {
         const fetchFeedbacks = async () => {
             try {
-                const response = await axios.get('/api/feedback'); // <-- API endpoint\
+                const response = await axios.get('https://blog-backend-1-5vcb.onrender.com/api/feedback'); // <-- API endpoint\
                 console.log(response.data)
                 setFeedbacks(response.data);
             } catch (error) {
