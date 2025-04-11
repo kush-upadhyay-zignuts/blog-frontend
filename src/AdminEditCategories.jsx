@@ -21,7 +21,7 @@ const AdminEditCategories = () => {
     // Fetch existing category data
     const fetchCategory = async () => {
       try {
-        const response = await axios.get(`/api/admin/${id}/categories/edit`);
+        const response = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/categories/edit`);
         setCategory(response.data.title); // Assuming { category: 'category name' }
       } catch (error) {
         console.error('Error fetching category:', error);
@@ -34,7 +34,7 @@ const AdminEditCategories = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`/api/admin/${id}/categories/edit`, { category });
+      await axios.post(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/categories/edit`, { category });
       toast.success("Category Edited successfully!");
       setTimeout(() => {
           navigate(-1); // or wherever you want after success
