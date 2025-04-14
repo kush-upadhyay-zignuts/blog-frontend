@@ -95,7 +95,7 @@ export default function LeftMenu() {
           <li><Link to="/admin/Categories/new">Add New Category</Link></li>
           <li><Link to="/admin/feedbacks">Recieved Feedback</Link></li> </> }
 
-          <li><Link to="/subscribe">{subscribe=== false ? "Subscribe" : "Upgrade Your Plan"}</Link></li>
+          {role !== "ADMIN" && <li><Link to="/subscribe">{subscribe=== false ? "Subscribe" : "Upgrade Your Plan"}</Link></li>}
 
          { user &&  role === "NORMAL" && <li><a href="/Feedback">Feedback</a></li>}
          { user && <li><a href="/logout">Logout</a></li>}
