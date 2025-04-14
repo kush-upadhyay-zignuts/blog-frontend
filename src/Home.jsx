@@ -78,7 +78,7 @@ function Home() {
       <nav className="navbar fixed-top navbar-expand-lg nav-color">
         <div className="container-fluid">
           <a className="navbar-brand text-info" href="#">
-            BlogVerse
+            StoryHaven
           </a>
           <button
             className="navbar-toggler"
