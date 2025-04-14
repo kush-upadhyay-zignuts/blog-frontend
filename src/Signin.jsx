@@ -76,7 +76,11 @@ export default function Signin() {
       if (response) {
           localStorage.setItem("LoggedInUser", res.email)
           localStorage.setItem("CurrentUserRole",res.roles)
+        toast.success("Login Successfully");
+        setTimeout(()=>{
        navigate("/blogs")// Redirect to /user if login successful
+          
+        },2000)
       } else {
         toast.error("Invalid email or password.");
       }
