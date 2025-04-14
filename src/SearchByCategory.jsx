@@ -146,59 +146,47 @@ function Home() {
             </ul>
 
             {/* Login/Logout Dropdown */}
-            <div id="nav-dropdown"  style={{ width: "2rem", marginRight: "2rem" }} className="dropdown bg-transparent">
-             {!user ? <button
-                id="nav-dropdown-button"
-                className="btn text-white mr-5 dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Login
-              </button> :
-               <div 
-               id="nav-dropdown-button"
-               type="button"
-               data-bs-toggle="dropdown"
-               aria-expanded="false"
-                className="d-flex align-items-center dropdown-toggle btn justify-content-center rounded-circle bg-info text-white"
-                style={{
-                  width: `50px`,
-                  height: `50px`,
-                  fontSize: `25px`,
-                  fontWeight: "bold",
-                  
-                }}
-                 >
-         {user ? user.trim().split('')[0].toUpperCase() : "Login"}
-      </div > }
-              <ul
-                id="nav-ul"
-                style={{ width: "2rem", marginRight: "5rem" }}
-                className="dropdown-menu"
-              >
-                {user ? (
-                  <li >
-                    <a className="" href="/logout">
-                      Logout
-                    </a>
-                  </li>
-                ) : (
-                  <>
-                    <li>
-                      <a className="" href="/signup">
-                        Sign up
-                      </a>
-                    </li>
-                    <li>
-                      <a className="" href="/signin">
-                        Sign in
-                      </a>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
+                      <div className="d-flex align-items-center ms-auto me-2">
+  <div id="nav-dropdown" className="dropdown bg-transparent">
+    {!user ? (
+      <button
+        id="nav-dropdown-button"
+        className="btn text-white dropdown-toggle me-2"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Login
+      </button>
+    ) : (
+      <div
+        id="nav-dropdown-button"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        className="d-flex align-items-center justify-content-center dropdown-toggle btn rounded-circle bg-info text-white me-2"
+        style={{
+          width: "50px",
+          height: "50px",
+          fontSize: "25px",
+          fontWeight: "bold",
+        }}
+      >
+        {user.trim().charAt(0).toUpperCase()}
+      </div>
+    )}
+    <ul className="dropdown-menu" >
+      {user ? (
+        <li><a className="dropdown-item px-0" href="/logout">Logout</a></li>
+      ) : (
+        <>
+          <li><a className="dropdown-item px-0" href="/signup">Sign up</a></li>
+          <li><a className="dropdown-item px-0" href="/signin">Sign in</a></li>
+        </>
+      )}
+    </ul>
+  </div>
+</div>
           </div>
         </div>
       </nav>
