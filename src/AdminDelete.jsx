@@ -55,10 +55,14 @@ export default function DeleteBlog() {
   }
 
   if (!blog) {
-    return (
+    return (<>
+      <Navbar/>
       <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <h4>Loading...</h4>
+      <div className="spinner-border text-info" role="status">
+        <span className="visually-hidden">Loading...</span>
       </div>
+    </div>
+    </>
     );
   }
 

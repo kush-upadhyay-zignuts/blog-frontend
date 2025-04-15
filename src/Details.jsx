@@ -112,9 +112,14 @@ export default function Details() {
 
   if (!blog) {
     return (
+      <>
+       <Navbar/>
       <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="h4">Loading...</div>
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
       </div>
+      </>
     );
   }
 
