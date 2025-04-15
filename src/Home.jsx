@@ -94,15 +94,15 @@ function Home() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
+  //       <div className="spinner-border text-info" role="status">
+  //         <span className="visually-hidden">Loading...</span>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
 
   if (!blogs) {
@@ -229,6 +229,13 @@ function Home() {
       {/* <LeftMenu /> */}
 
       {/* Blog List */}
+
+
+      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
       <div className="container " style={{marginTop:"6rem"}}>
         {blogs.map((blog, idx) => (
           <Link
