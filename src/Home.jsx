@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect,useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import './index.css'
@@ -14,6 +14,8 @@ function Home() {
   const [isOpen,SetIsOpen] = useState(false)
   const [user, setUser] = useState(""); // Assume you will fetch user info separately
   const navigate = useNavigate()
+
+  const autocompleteRef = useRef(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -34,6 +36,22 @@ function Home() {
     };
   
     fetchBlogs();
+  }, []);
+  useEffect(() => {
+    // Event listener to detect clicks outside of the autocomplete suggestions
+    const handleClickOutside = (event) => {
+      if (autocompleteRef.current && !autocompleteRef.current.contains(event.target)) {
+        SetIsOpen(false); // Close the suggestions if clicked outside
+      }
+    };
+
+    // Add event listener for mouse clicks
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
    useEffect(() => {
@@ -123,7 +141,7 @@ function Home() {
 
                 {/* Autocomplete Suggestions */}
                 {isOpen && (
-                  <ul id="autocomplete" className="autocomplete overflow-auto" style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid #ccc", borderRadius: "4px" }}>
+                  <ul id="autocomplete" className="autocomplete overflow-auto"  ref={autocompleteRef} style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid #ccc", borderRadius: "4px" }}>
                     {filteredBlogs.map((blog, idx) => (
                       <li
                         key={idx}
