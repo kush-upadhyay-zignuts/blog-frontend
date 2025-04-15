@@ -17,6 +17,7 @@ function Home() {
   const [user, setUser] = useState(""); // Assume you will fetch user info separately
   const navigate = useNavigate()
   const autocompleteRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
 
    useEffect(() => {
@@ -39,6 +40,8 @@ function Home() {
         setBlogs(data.blogs);
         setCategories(data.categories);
         setFilteredBlogs(data.categories);
+        setLoading(false); 
+        
       } catch (err) {
         console.error('Error fetching blogs:', err.message);
       }
@@ -100,6 +103,15 @@ function Home() {
     return (
       <div className="d-flex align-items-center justify-content-center min-vh-100">
         <div className="h4">Loading...</div>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
       </div>
     );
   }

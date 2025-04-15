@@ -14,6 +14,7 @@ function Home() {
   const [isOpen,SetIsOpen] = useState(false)
   const [user, setUser] = useState(""); // Assume you will fetch user info separately
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(true);
 
   const autocompleteRef = useRef(null);
 
@@ -30,6 +31,7 @@ function Home() {
         const data = await res.json();
         setBlogs(data.blogs);
         setFilteredBlogs(data.blogs);
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching blogs:', err.message);
       }
@@ -91,6 +93,16 @@ function Home() {
       navigate(`/${input}`)
     }
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
 
   if (!blogs) {
