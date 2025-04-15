@@ -150,7 +150,7 @@ export default function Details() {
     </p>
     <h1 className="mt-3">{blog.title}</h1>
     <img
-      src={`https://blog-backend-1-5vcb.onrender.com${blog.imgUrl}`}
+      src={blog.imgUrl}
       className="mt-3"
       style={{ width: "50rem", height: "30rem", objectFit: "cover" }}
       alt={blog.title}

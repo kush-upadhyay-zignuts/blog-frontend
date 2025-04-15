@@ -19,6 +19,8 @@ function Home() {
     const fetchBlogs = async () => {
       try {
         const res = await fetch('https://blog-backend-1-5vcb.onrender.com/api/blogs');
+        // const res = await fetch('/api/blogs');
+        
       
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -203,7 +205,8 @@ function Home() {
               style={{ width: "80rem" }}
             >
               <img
-                src={`https://blog-backend-1-5vcb.onrender.com${blog.imgUrl}`}
+                // src={`https://blog-backend-1-5vcb.onrender.com${blog.imgUrl}`}
+                src={blog.imgUrl}
                 className="card-img-top"
                 style={{ width: "20rem", height: "15rem" }}
                 alt={blog.title}

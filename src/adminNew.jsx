@@ -24,6 +24,7 @@ const AdminNew = () => {
       async function fetchCategory() {
         try {
           const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/admin/blogs/new`, { withCredentials: true });
+          // const res = await axios.get(`/api/admin/blogs/new`, { withCredentials: true });
          const data = res.data;       
           setCategory(res.data);
         } catch (err) {

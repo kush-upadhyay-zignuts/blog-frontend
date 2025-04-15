@@ -201,7 +201,7 @@ export default function AdminEdit() {
       </form>
       <br />
       <button
-        onClick={() => navigate("/admin/allblogs")}
+        onClick={() => navigate(-1)}
         style={{ width: "6rem" }}
         className="btn btn-primary"
       >
