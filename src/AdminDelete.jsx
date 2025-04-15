@@ -12,6 +12,7 @@ export default function DeleteBlog() {
   const navigate = useNavigate();
   const [blog, setBlog] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const handleGoBack = () => {
     navigate(-1);
   };
@@ -21,6 +22,7 @@ export default function DeleteBlog() {
         const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/admin/${id}/delete`, { withCredentials: true });
         setBlog(res.data);
         console.log(res.data)
+        setLoading(false);
       } catch (err) {
         console.error(err);
         setError("Failed to load blog data.");
@@ -52,18 +54,23 @@ export default function DeleteBlog() {
     );
   }
 
-  if (!blog) {
-    return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <h4>Loading...</h4>
-      </div>
-    );
-  }
+  // if (!blog) {
+  //   return (
+  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
+  //       <h4>Loading...</h4>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
    
     <Navbar/>
+    {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
     <button
      onClick={handleGoBack}
      className="btn btn-light position-absolute top-0.5  m-3 border-0 fs-3"

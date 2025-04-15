@@ -78,6 +78,7 @@ export default function Details() {
   const { title } = useParams();
   const [blog, setBlog] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const handleGoBack = () => {
@@ -91,6 +92,7 @@ export default function Details() {
           withCredentials: true,
         });
         setBlog(res.data.blog);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching blog:", err);
         setError("Blog not found or server error!");
@@ -108,17 +110,22 @@ export default function Details() {
     );
   }
 
-  if (!blog) {
-    return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="h4">Loading...</div>
-      </div>
-    );
-  }
+  // if (!blog) {
+  //   return (
+  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
+  //       <div className="h4">Loading...</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <> 
     <Navbar/>
+    {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
     <button
         onClick={handleGoBack}
         className="btn btn-light position-absolute  m-3 border-0 fs-3"

@@ -18,6 +18,7 @@ export default function AdminEdit() {
     Image: null, // For the new uploaded file
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -36,6 +37,7 @@ export default function AdminEdit() {
           Image: null,
         });
         setCategory(data.category)
+        setLoading(false);
       } catch (err) {
         console.error(err);
         setError("Failed to load blog data.");
@@ -90,17 +92,23 @@ export default function AdminEdit() {
     );
   }
 
-  if (!blog.title && !error) {
-    return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <h4>Loading...</h4>
-      </div>
-    );
-  }
+  // if (!blog.title && !error) {
+  //   return (
+  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
+  //       <h4>Loading...</h4>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
       <Navbar/>
+
+      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
        <button
         onClick={handleGoBack}
         className="btn btn-light position-absolute top-0.5  m-3 border-0 fs-3"

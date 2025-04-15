@@ -9,6 +9,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch categories from API on mount
@@ -16,6 +17,7 @@ const AdminCategories = () => {
       try {
         const response = await axios.get('https://blog-backend-1-5vcb.onrender.com/api/admin/categories');
         setCategories(response.data); // Assume backend sends array of categories/blogs
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -29,7 +31,11 @@ const AdminCategories = () => {
       {/* Assuming partial head and nav are already in your main App Layout */}
       <Navbar/>
       <LeftMenu/>
-    
+      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
 
       <table id="blog-table" className="mx-auto" style={{marginTop:"5rem"}}>
         <thead>

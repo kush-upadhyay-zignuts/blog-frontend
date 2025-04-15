@@ -9,12 +9,14 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 export default function AdminAllBlogs() {
   const [blogs, setBlogs] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchBlogs() {
       try {
         const res = await axios.get(' https://blog-backend-1-5vcb.onrender.com/api/admin/blogs', { withCredentials: true });
         setBlogs(res.data); // assuming backend sends { blogs: [...] }
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching blogs:", err);
         setError("Failed to load blogs");
@@ -32,19 +34,25 @@ export default function AdminAllBlogs() {
     );
   }
 
-  if (blogs.length === 0) {
-    return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="h4">Loading...</div>
-      </div>
-    );
-  }
+  // if (blogs.length === 0) {
+  //   return (
+  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
+  //       <div className="h4">Loading...</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
       {/* Assuming leftmenu would be a separate component */}
       <Navbar/>
       <LeftMenu /> 
+
+      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
 
       <table id="blog-table" className=" mx-auto" style={{marginTop:"5rem"}}>
         <thead>
