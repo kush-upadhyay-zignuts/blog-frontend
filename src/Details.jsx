@@ -110,13 +110,13 @@ export default function Details() {
     );
   }
 
-  // if (!blog) {
-  //   return (
-  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
-  //       <div className="h4">Loading...</div>
-  //     </div>
-  //   );
-  // }
+  if (!blog) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="h4">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <> 

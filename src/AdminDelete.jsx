@@ -54,13 +54,13 @@ export default function DeleteBlog() {
     );
   }
 
-  // if (!blog) {
-  //   return (
-  //     <div className="d-flex align-items-center justify-content-center min-vh-100">
-  //       <h4>Loading...</h4>
-  //     </div>
-  //   );
-  // }
+  if (!blog) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <h4>Loading...</h4>
+      </div>
+    );
+  }
 
   return (
     <>
