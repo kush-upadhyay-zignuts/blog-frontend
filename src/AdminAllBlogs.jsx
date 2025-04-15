@@ -48,11 +48,6 @@ export default function AdminAllBlogs() {
       <Navbar/>
       <LeftMenu /> 
 
-      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>}
 
       <table id="blog-table" className=" mx-auto" style={{marginTop:"5rem"}}>
         <thead>
@@ -83,6 +78,11 @@ export default function AdminAllBlogs() {
           ))}
         </tbody>
       </table>
+      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
     </div>
   );
 }
