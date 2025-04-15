@@ -23,7 +23,7 @@ function Home() {
         const loggedInUser = localStorage.getItem("LoggedInUser");
         if (loggedInUser) {
           setUser(loggedInUser);
-        }
+        }                              
       }, []);
 
 
@@ -96,6 +96,13 @@ function Home() {
         setCatTitle("")
     }
   };
+  if (!blogs) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="h4">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div>

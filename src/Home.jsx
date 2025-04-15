@@ -92,6 +92,15 @@ function Home() {
     }
   };
 
+
+  if (!blogs) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="h4">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Navbar */}
