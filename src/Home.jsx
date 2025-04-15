@@ -123,7 +123,7 @@ function Home() {
 
                 {/* Autocomplete Suggestions */}
                 {isOpen && (
-                  <ul id="autocomplete" className="autocomplete overflow-auto">
+                  <ul id="autocomplete" className="autocomplete overflow-auto" style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid #ccc", borderRadius: "4px" }}>
                     {filteredBlogs.map((blog, idx) => (
                       <li
                         key={idx}
