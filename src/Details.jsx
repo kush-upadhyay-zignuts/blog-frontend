@@ -65,120 +65,205 @@
 
 
 
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import './index.css'
+// import { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "axios";
+// import './index.css'
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// import Navbar from "./Navbar";
+// import { useNavigate } from "react-router-dom";
+
+// export default function Details() {
+//   const { title } = useParams();
+//   const [blog, setBlog] = useState(null);
+//   const [error, setError] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   const navigate = useNavigate();
+//   const handleGoBack = () => {
+//     navigate(-1);
+//   };
+
+//   useEffect(() => {
+//     async function fetchBlog() {
+//       try {
+//         const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/${title}`, {
+//           withCredentials: true,
+//         });
+//         setBlog(res.data.blog);
+//         setLoading(false);
+//       } catch (err) {
+//         console.error("Error fetching blog:", err);
+//         setError("Blog not found or server error!");
+//       }
+//     }
+//     fetchBlog();
+//   }, [title]);
+
+//   if (error) {
+//     return (
+//       <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center p-4">
+//         <h1 className="display-4 text-danger mb-4">404 - Not Found</h1>
+//         <p className="lead">{error}</p>
+//       </div>
+//     );
+//   }
+
+//   if (!blog) {
+//     return (
+//       <>
+//        <Navbar/>
+//       <div className="d-flex align-items-center justify-content-center min-vh-100">
+//         <div className="spinner-border text-info" role="status">
+//           <span className="visually-hidden">Loading...</span>
+//         </div>
+//       </div>
+//       </>
+//     );
+//   }
+
+//   return (
+//     <> 
+//     <Navbar/>
+//     {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+//         <div className="spinner-border text-info" role="status">
+//           <span className="visually-hidden">Loading...</span>
+//         </div>
+//       </div>}
+//     <button
+//         onClick={handleGoBack}
+//         className="btn btn-light position-absolute  m-3 border-0 fs-3"
+//         style={{ left: "50px", top:"60px" }}
+//       >
+//           &larr;
+//       </button>
+//       {/* <div className="mx-auto  text-center" style={{ width: "80rem", marginTop:"5rem" }}>
+//         <div className="mx-auto text-start" style={{ width: "50rem" }}>
+//           <p className="mt-3">
+//             {new Date(blog.createdAt).toString().slice(0, 25)}
+//           </p>
+//           <h1 className="mt-3">{blog.title}</h1>
+//           <img
+//             src={`http://localhost:5000${blog.imgUrl}`}
+//             className="mt-3"
+//             style={{ width: "50rem", height: "30rem", objectFit: "cover" }}
+//             alt={blog.title}
+//           />
+//           <div className="mt-3" style={{ width: "50rem" }}>
+//             <div dangerouslySetInnerHTML={{ __html: blog.description }} />
+//           </div>
+//         </div>
+//       </div> */}
+//       <div className="mx-auto text-center" style={{ width: "80rem", marginTop: "5rem" }}>
+//   <div className="mx-auto text-start" style={{ width: "50rem" }}>
+//     <p className="mt-3">
+//       {new Date(blog.createdAt).toString().slice(0, 25)}
+//     </p>
+//     <h1 className="mt-3">{blog.title}</h1>
+//     <img
+//       src={blog.imgUrl}
+//       className="mt-3"
+//       style={{ width: "50rem", height: "30rem", objectFit: "cover" }}
+//       alt={blog.title}
+//     />
+    
+//     {/* Updated content rendering */}
+//     <div className="container my-5">
+//       <h1 className="mb-4">{blog.title}</h1>
+//       <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.1rem', lineHeight: '1.8' }}>
+//         {blog.description}
+//       </div>
+//     </div>
+
+//   </div>
+// </div>
+
+//     </>
+//   );
+// }
+
+
+import { useParams, useNavigate } from "react-router-dom";
+import useSWR from "swr";
+import './index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Navbar from "./Navbar";
-import { useNavigate } from "react-router-dom";
+
+const fetcher = (url) => fetch(url, { credentials: 'include' }).then(res => res.json());
 
 export default function Details() {
   const { title } = useParams();
-  const [blog, setBlog] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
+
+  const { data, error, isLoading } = useSWR(
+    `https://blog-backend-1-5vcb.onrender.com/api/${title}`,
+    fetcher
+  );
+
   const handleGoBack = () => {
     navigate(-1);
   };
-
-  useEffect(() => {
-    async function fetchBlog() {
-      try {
-        const res = await axios.get(`https://blog-backend-1-5vcb.onrender.com/api/${title}`, {
-          withCredentials: true,
-        });
-        setBlog(res.data.blog);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching blog:", err);
-        setError("Blog not found or server error!");
-      }
-    }
-    fetchBlog();
-  }, [title]);
 
   if (error) {
     return (
       <div className="d-flex flex-column align-items-center justify-content-center min-vh-100 text-center p-4">
         <h1 className="display-4 text-danger mb-4">404 - Not Found</h1>
-        <p className="lead">{error}</p>
+        <p className="lead">Blog not found or server error!</p>
       </div>
     );
   }
 
-  if (!blog) {
+  if (isLoading || !data?.blog) {
     return (
       <>
-       <Navbar/>
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
+        <Navbar />
+        <div className="d-flex align-items-center justify-content-center min-vh-100">
+          <div className="spinner-border text-info" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
-      </div>
       </>
     );
   }
 
+  const blog = data.blog;
+
   return (
-    <> 
-    <Navbar/>
-    {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>}
-    <button
+    <>
+      <Navbar />
+
+      <button
         onClick={handleGoBack}
-        className="btn btn-light position-absolute  m-3 border-0 fs-3"
-        style={{ left: "50px", top:"60px" }}
+        className="btn btn-light position-absolute m-3 border-0 fs-3"
+        style={{ left: "50px", top: "60px" }}
       >
-          &larr;
+        &larr;
       </button>
-      {/* <div className="mx-auto  text-center" style={{ width: "80rem", marginTop:"5rem" }}>
+
+      <div className="mx-auto text-center" style={{ width: "80rem", marginTop: "5rem" }}>
         <div className="mx-auto text-start" style={{ width: "50rem" }}>
           <p className="mt-3">
             {new Date(blog.createdAt).toString().slice(0, 25)}
           </p>
           <h1 className="mt-3">{blog.title}</h1>
           <img
-            src={`http://localhost:5000${blog.imgUrl}`}
+            src={blog.imgUrl}
             className="mt-3"
             style={{ width: "50rem", height: "30rem", objectFit: "cover" }}
             alt={blog.title}
           />
-          <div className="mt-3" style={{ width: "50rem" }}>
-            <div dangerouslySetInnerHTML={{ __html: blog.description }} />
+
+          {/* Render description with formatting */}
+          <div className="container my-5">
+            <h1 className="mb-4">{blog.title}</h1>
+            <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.1rem', lineHeight: '1.8' }}>
+              {blog.description}
+            </div>
           </div>
         </div>
-      </div> */}
-      <div className="mx-auto text-center" style={{ width: "80rem", marginTop: "5rem" }}>
-  <div className="mx-auto text-start" style={{ width: "50rem" }}>
-    <p className="mt-3">
-      {new Date(blog.createdAt).toString().slice(0, 25)}
-    </p>
-    <h1 className="mt-3">{blog.title}</h1>
-    <img
-      src={blog.imgUrl}
-      className="mt-3"
-      style={{ width: "50rem", height: "30rem", objectFit: "cover" }}
-      alt={blog.title}
-    />
-    
-    {/* Updated content rendering */}
-    <div className="container my-5">
-      <h1 className="mb-4">{blog.title}</h1>
-      <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.1rem', lineHeight: '1.8' }}>
-        {blog.description}
       </div>
-    </div>
-
-  </div>
-</div>
-
     </>
   );
 }
