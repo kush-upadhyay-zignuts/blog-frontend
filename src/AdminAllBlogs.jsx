@@ -134,7 +134,7 @@ export default function AdminAllBlogs() {
             </tr>
           </thead>
           <tbody>
-            {data.blogs.map((blog) => (
+            {data.map((blog) => (
               <tr key={blog._id} id="blog-body-row">
                 <td className="body-data">{blog.title}</td>
                 <td className="body-data">{blog.category}</td>
