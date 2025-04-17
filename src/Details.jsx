@@ -292,7 +292,7 @@ export default function Details() {
                     </div>
                   </div>
                 </div>
-                <p style={{filter: "blur(4px)"}}>{blog.description.slice(blog.description.length/3,blog.description.length/2)}</p>
+                <p style={{filter: "blur(4px)"}}>{blog.description.slice(blog.description.length/3,blog.description.length/2)}......</p>
             </>
           }
    
