@@ -78,7 +78,7 @@ export default function Signin() {
           localStorage.setItem("CurrentUserRole",res.roles)
         toast.success("Login Successfully");
         setTimeout(()=>{
-       navigate("/blogs")// Redirect to /user if login successful
+       navigate(-1)// Redirect to /user if login successful
           
         },2000)
       } else {
