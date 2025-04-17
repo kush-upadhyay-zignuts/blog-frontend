@@ -196,11 +196,18 @@ const fetcher = (url) => fetch(url, { credentials: 'include' }).then(res => res.
 export default function Details() {
   const { title } = useParams();
   const navigate = useNavigate();
+  const [user, setUser] = useState("");
 
   const { data, error, isLoading } = useSWR(
     `https://blog-backend-1-5vcb.onrender.com/api/${title}`,
     fetcher
   );
+    useEffect(() => {
+      const loggedInUser = localStorage.getItem("LoggedInUser");
+      if (loggedInUser) {
+        setUser(loggedInUser);
+      }
+    }, []);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -259,7 +266,34 @@ export default function Details() {
           <div className="container my-5">
             <h1 className="mb-4">{blog.title}</h1>
             <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.1rem', lineHeight: '1.8' }}>
-              {blog.description}
+              {user && blog.description }
+              {!user && <>
+                   <p style="filter: blur(4px);">{blog.description.slice(0,blog.description.length/2)}</p>
+              
+                  <div className="container my-5">
+                  <div className="card shadow-lg p-4 text-center">
+                    <h4 className="mb-3">Want to read the full blog on <span className="text-info">StoryHaven</span>?</h4>
+                    <p className="text-muted">Please sign in to continue reading.</p>
+
+                    <div className="d-flex justify-content-center gap-3 mt-4">
+                      <a href="/signin" className="btn btn-info text-white px-4">
+                        Sign In
+                      </a>
+                      <button
+                        className="btn btn-outline-secondary px-4"
+                        onClick={() => window.history.back()} // or any cancel logic
+                        >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+            </>
+          }
+              {!user && 
+              <p style="filter: blur(4px);">{blog.description.slice(blog.description.length/3,blog.description.length/2)}</p>}
+
+
             </div>
           </div>
         </div>
