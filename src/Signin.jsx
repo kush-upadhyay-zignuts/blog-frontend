@@ -20,7 +20,7 @@ export default function Signin() {
  
 
   const handleGoBack = () => {
-    navigate("/blogs");
+    navigate(-1);
   };
 
   // Validate inputs
