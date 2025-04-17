@@ -269,7 +269,7 @@ export default function Details() {
             <div style={{ whiteSpace: 'pre-wrap', fontSize: '1.1rem', lineHeight: '1.8' }}>
               {user && blog.description }
               {!user && <>
-                   <p style="filter: blur(4px);">{blog.description.slice(0,blog.description.length/2)}</p>
+                   <p>{blog.description.slice(0,blog.description.length/3)}</p>
               
                   <div className="container my-5">
                   <div className="card shadow-lg p-4 text-center">
@@ -289,10 +289,10 @@ export default function Details() {
                     </div>
                   </div>
                 </div>
+                <p style={{filter: "blur(4px)"}}>{blog.description.slice(blog.description.length/3,blog.description.length/2)}</p>
             </>
           }
-              {!user && 
-              <p style="filter: blur(4px);">{blog.description.slice(blog.description.length/3,blog.description.length/2)}</p>}
+   
 
 
             </div>
