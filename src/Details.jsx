@@ -184,8 +184,9 @@
 // }
 
 
-import { useParams,useState, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useSWR from "swr";
+import { useState } from "react";
 import './index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
