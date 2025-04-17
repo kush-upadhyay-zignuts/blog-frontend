@@ -277,12 +277,12 @@ export default function Details() {
                     <p className="text-muted">Please sign in to continue reading.</p>
 
                     <div className="d-flex justify-content-center gap-3 mt-4">
-                      <a href="/signin" className="btn btn-info text-white px-4">
+                    <button onClick={navigate("/signin")} className="btn btn-info text-white px-4">
                         Sign In
-                      </a>
+                        </button>
                       <button
                         className="btn btn-outline-secondary px-4"
-                        onClick={() => window.history.back()} // or any cancel logic
+                        onClick={handleGoBack} // or any cancel logic
                         >
                         Cancel
                       </button>
