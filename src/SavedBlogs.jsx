@@ -21,7 +21,7 @@ useEffect(() => {
     if (currentUser) {
       const key = `bookmarks_${currentUser}`;
       const saved = JSON.parse(localStorage.getItem(key)) || [];
-      setBookmarks(saved);
+      setBookmarkedTitles(saved);
     }
   }, []);
   
