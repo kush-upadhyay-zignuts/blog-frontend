@@ -551,16 +551,35 @@ function Home() {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState("");
+  const [bookmarks, setBookmarks] = useState([]);
 
+  
+  // Save blog to localStorage
+  const saveToBookmarks = (blogId) => {
+    let updated = [...bookmarks];
+    if (!updated.includes(blogId)) {
+      updated.push(blogId);
+      setBookmarks(updated);
+      localStorage.setItem("bookmarks", JSON.stringify(updated));
+    }
+  };
+  
+  const isBookmarked = (blogId) => bookmarks.includes(blogId);
+  
   // Infinite scroll logic
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && previousPageData.blogs.length === 0) return null;
     return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
   };
-
+  
   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
   const { ref, inView } = useInView();
-
+  // Load bookmarks from localStorage on mount
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    setBookmarks(saved);
+  }, []);
+  
   const blogs = data ? data.flatMap((page) => page.blogs) : [];
   const isReachingEnd = data && data[data.length - 1]?.hasMore === false;
 
@@ -726,7 +745,7 @@ function Home() {
       <LeftMenu />
 
       <div className="container" style={{ marginTop: "6rem" }}>
-        {blogs.map((blog, idx) => (
+        {blogs.map((blog, idx) => (<>
           <Link to={`/${blog.title}`} key={idx} style={{ textDecoration: "none", color: "inherit" }}>
             <div className="d-flex mt-4 mx-auto align-items-center px-5" style={{ width: "80rem" }}>
               <img src={blog.imgUrl} className="card-img-top" style={{ width: "20rem", height: "15rem" }} alt={blog.title} />
@@ -737,6 +756,14 @@ function Home() {
               </div>
             </div>
           </Link>
+          <button
+              className={`btn btn-sm ${isBookmarked(blog.title) ? "btn-success" : "btn-outline-info"}`}
+              style={{ position: "absolute", top: "10px", right: "10px" }}
+              onClick={() => saveToBookmarks(blog.title)}
+            >
+              {isBookmarked(blog.title) ? "Saved" : "Save for Later"}
+            </button>
+        </>
         ))}
 
         <div ref={ref} className="text-center py-4">
