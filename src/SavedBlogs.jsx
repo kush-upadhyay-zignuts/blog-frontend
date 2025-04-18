@@ -1,53 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const SavedBlogs = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const user = JSON.parse(localStorage.getItem("LoggedInUser")); // assuming this is stored as JSON
+  const [bookmarkedTitles, setBookmarkedTitles] = useState([]);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
 
   useEffect(() => {
-    const fetchSavedBlogs = async () => {
+    // Load bookmarks from localStorage
+    const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    setBookmarkedTitles(saved);
+  }, []);
+
+  useEffect(() => {
+    const fetchAllBlogs = async () => {
       try {
-        const response = await axios.get(`/api/saved-blogs?userId=${user?._id}`);
-        setBlogs(response.data);
-      } catch (err) {
-        console.error("Error fetching saved blogs:", err);
-      } finally {
-        setLoading(false);
+        const res = await fetch("https://blog-backend-1-5vcb.onrender.com/api/blogs?page=1&limit=1000");
+        const data = await res.json();
+        setAllBlogs(data.blogs || []);
+      } catch (error) {
+        console.error("Failed to fetch blogs:", error);
       }
     };
 
-    if (user) {
-      fetchSavedBlogs();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
+    fetchAllBlogs();
+  }, []);
 
-  if (loading) return <div className="text-center mt-5">Loading saved blogs...</div>;
+  useEffect(() => {
+    // Filter all blogs by bookmarked titles
+    const matchedBlogs = allBlogs.filter((blog) =>
+      bookmarkedTitles.includes(blog.title)
+    );
+    setFilteredBlogs(matchedBlogs);
+  }, [bookmarkedTitles, allBlogs]);
 
-  if (!user) return <div className="text-center mt-5 text-danger">Please log in to view your saved blogs.</div>;
-
-  if (blogs.length === 0) return <div className="text-center mt-5">You haven't saved any blogs yet.</div>;
+  if (!filteredBlogs.length) {
+    return (
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <h4>No saved blogs found.</h4>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5 pt-4">
-      <h2 className="mb-4 text-info">Your Saved Blogs</h2>
-      <div className="row">
-        {blogs.map((blog) => (
-          <div className="col-md-6 col-lg-4 mb-4" key={blog._id}>
-            <div className="card h-100 shadow-sm">
-              <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{blog.title}</h5>
-                <p className="card-text text-truncate">{blog.content}</p>
-                <a href={`/blog/${blog._id}`} className="btn btn-info mt-auto">Read More</a>
+      <h2 className="mb-4 text-center text-info">Your Saved Blogs</h2>
+      {filteredBlogs.map((blog, idx) => (
+        <div className="card mb-4 shadow-sm" key={idx}>
+          <div className="row g-0">
+            <div className="col-md-4">
+              <img
+                src={blog.imgUrl}
+                className="img-fluid rounded-start"
+                alt={blog.title}
+              />
+            </div>
+            <div className="col-md-8">
+              <div className="card-body">
+                <Link
+                  to={`/${blog.title}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <h5 className="card-title">{blog.title}</h5>
+                </Link>
+                <p className="card-text">{blog.description}</p>
+                <p className="card-text">
+                  <small className="text-muted">
+                    {new Date(blog.createdAt).toLocaleString()}
+                  </small>
+                </p>
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
