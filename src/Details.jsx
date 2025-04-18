@@ -78,7 +78,7 @@ export default function Details() {
       </button>
 
        {/* Bootstrap progress bar for scroll */}
-       <div className="progress fixed-top" style={{top: "56px", height: "5px", zIndex: 1050 }}>
+       <div className="progress fixed-top" style={user?{top: "63px", height: "5px", zIndex: 1050 } :{top: "56px", height: "5px", zIndex: 1050 }}>
         <div
           className="progress-bar bg-info"
           role="progressbar"
