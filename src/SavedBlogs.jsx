@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Navbar from "./Navbar";
 
 const SavedBlogs = () => {
   const [bookmarkedTitles, setBookmarkedTitles] = useState([]);
@@ -26,6 +28,9 @@ const SavedBlogs = () => {
 
     fetchAllBlogs();
   }, []);
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     // Filter all blogs by bookmarked titles
@@ -37,31 +42,50 @@ const SavedBlogs = () => {
 
   if (!filteredBlogs.length) {
     return (
+        <>
+         <Navbar />
+    <button
+        onClick={handleGoBack}
+        className="btn btn-light position-absolute m-3 border-0 fs-3"
+        style={{ left: "50px", top: "60px" }}
+      >
+        &larr;
+      </button>
       <div className="d-flex align-items-center justify-content-center min-vh-100">
         <h4>No saved blogs found.</h4>
       </div>
+        </>
     );
   }
 
   return (
+    <> 
+    <Navbar />
+    <button
+        onClick={handleGoBack}
+        className="btn btn-light position-absolute m-3 border-0 fs-3"
+        style={{ left: "50px", top: "60px" }}
+      >
+        &larr;
+      </button>
     <div className="container mt-5 pt-4">
       <h2 className="mb-4 text-center text-info">Your Saved Blogs</h2>
       {filteredBlogs.map((blog, idx) => (
-        <div className="card mb-4 shadow-sm" key={idx}>
+          <div className="card mb-4 shadow-sm" key={idx}>
           <div className="row g-0">
             <div className="col-md-4">
               <img
                 src={blog.imgUrl}
                 className="img-fluid rounded-start"
                 alt={blog.title}
-              />
+                />
             </div>
             <div className="col-md-8">
               <div className="card-body">
                 <Link
                   to={`/${blog.title}`}
                   style={{ textDecoration: "none", color: "inherit" }}
-                >
+                  >
                   <h5 className="card-title">{blog.title}</h5>
                 </Link>
                 <p className="card-text">{blog.description}</p>
@@ -76,6 +100,7 @@ const SavedBlogs = () => {
         </div>
       ))}
     </div>
+      </>
   );
 };
 
