@@ -743,18 +743,17 @@ function Home() {
       </nav>
 
       <LeftMenu />
-
+{/* 
       <div className="container" style={{ marginTop: "6rem" }}>
         {blogs.map((blog, idx) => (<>
-          <Link to={`/${blog.title}`} key={idx} style={{ textDecoration: "none", color: "inherit" }}>
             <div className="d-flex mt-4 mx-auto align-items-center px-5" style={{ width: "80rem" }}>
+          <Link to={`/${blog.title}`} key={idx} style={{ textDecoration: "none", color: "inherit" }}>
               <img src={blog.imgUrl} className="card-img-top" style={{ width: "20rem", height: "15rem" }} alt={blog.title} />
               <div className="card-body ms-5" style={{ width: "50rem" }}>
                 <h5 className="card-title">{blog.title}</h5>
                 <p className="card-text red overflow-hidden">{blog.description}</p>
                 <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
               </div>
-            </div>
           </Link>
           <button
               className={`btn btn-sm ${isBookmarked(blog.title) ? "btn-success" : "btn-outline-info"}`}
@@ -763,8 +762,52 @@ function Home() {
             >
               {isBookmarked(blog.title) ? "Saved" : "Save for Later"}
             </button>
+            </div>
         </>
-        ))}
+        
+        ))} */}
+        <div className="container" style={{ marginTop: "6rem" }}>
+  {blogs.map((blog, idx) => (
+    <div
+      className="d-flex mt-4 mx-auto align-items-center px-5"
+      style={{ width: "80rem" }}
+      key={idx}
+    >
+      <Link
+        to={`/${blog.title}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <img
+          src={blog.imgUrl}
+          className="card-img-top"
+          style={{ width: "20rem", height: "15rem" }}
+          alt={blog.title}
+        />
+
+      </Link>
+      <div className="card-body ms-5" style={{ width: "50rem" }}>
+      <Link
+        to={`/${blog.title}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <h5 className="card-title">{blog.title}</h5>
+        <p className="card-text red overflow-hidden">{blog.description}</p>
+        <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+        </Link>
+
+        {/* Save for Later button under the date */}
+        <button
+          className={`btn btn-sm mt-2 ${
+            isBookmarked(blog.title) ? "btn-success" : "btn-outline-info"
+          }`}
+          onClick={() => saveToBookmarks(blog.title)}
+        >
+          {isBookmarked(blog.title) ? "Saved" : "Save for Later"}
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
 
         <div ref={ref} className="text-center py-4">
           {isReachingEnd ? (
