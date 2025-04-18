@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Navbar from "./Navbar";
+import { Link, useNavigate } from "react-router-dom";
 
 const SavedBlogs = () => {
   const [bookmarkedTitles, setBookmarkedTitles] = useState([]);
+  const navigate = useNavigate();
   const [allBlogs, setAllBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
 
@@ -60,11 +62,32 @@ const SavedBlogs = () => {
         &larr;
       </button>
       <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+        </>
+    );
+  }
+
+  if (filteredBlogs.length === 0) {
+    return (
+        <>
+         <Navbar />
+    <button
+        onClick={handleGoBack}
+        className="btn btn-light position-absolute m-3 border-0 fs-3"
+        style={{ left: "50px", top: "60px" }}
+      >
+        &larr;
+      </button>
+      <div className="d-flex align-items-center justify-content-center min-vh-100">
         <h4>No saved blogs found.</h4>
       </div>
         </>
     );
   }
+
 
   return (
     <> 
@@ -93,9 +116,9 @@ const SavedBlogs = () => {
                 />
             </div>
             <div className="col-md-8">
-              <div className="card-body">
+              <div className="card-body mt-3">
                   <h5 className="card-title">{blog.title}</h5>
-                <p className="card-text">{blog.description.slice(0,150)}...</p>
+                <p className="card-text">{blog.description.slice(0,250)}...</p>
                 <p className="card-text">
                   <small className="text-muted">
                     {new Date(blog.createdAt).toLocaleString()}
