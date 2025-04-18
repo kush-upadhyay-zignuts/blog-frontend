@@ -555,16 +555,24 @@ function Home() {
 
   
   // Save blog to localStorage
-  const saveToBookmarks = (blogId) => {
-    let updated = [...bookmarks];
-    if (!updated.includes(blogId)) {
-      updated.push(blogId);
-      setBookmarks(updated);
-      localStorage.setItem("bookmarks", JSON.stringify(updated));
+  const saveToBookmarks = (blogTitle) => {
+    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    if (!bookmarks.includes(blogTitle)) {
+      bookmarks.push(blogTitle);
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
     }
   };
   
-  const isBookmarked = (blogId) => bookmarks.includes(blogId);
+
+  const isBookmarked = (blogTitle) => {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    return bookmarks.includes(blogTitle);
+  };
+  const removeFromBookmarks = (blogTitle) => {
+    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    bookmarks = bookmarks.filter((title) => title !== blogTitle);
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+  };
   
   // Infinite scroll logic
   const getKey = (pageIndex, previousPageData) => {
@@ -651,7 +659,7 @@ function Home() {
       </div>
     );
   }
-
+  const bookmarked = isBookmarked(blog.title);
   return (
     <div>
       {/* Navbar */}
@@ -768,6 +776,7 @@ function Home() {
         ))} */}
         <div className="container" style={{ marginTop: "6rem" }}>
   {blogs.map((blog, idx) => (
+    
     <div
       className="d-flex mt-4 mx-auto align-items-center px-5"
       style={{ width: "80rem" }}
@@ -795,15 +804,26 @@ function Home() {
         <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
         </Link>
 
-        {/* Save for Later button under the date */}
-        <button
-          className={`btn btn-sm mt-2 ${
-            isBookmarked(blog.title) ? "btn-success" : "btn-outline-info"
-          }`}
-          onClick={() => saveToBookmarks(blog.title)}
-        >
-          {isBookmarked(blog.title) ? "Saved" : "Save for Later"}
-        </button>
+        {bookmarked ? (
+            <div className="d-flex gap-3 mt-2">
+              <button className="btn btn-sm btn-success" disabled>
+               Saved
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => removeFromBookmarks(blog.title)}
+              >
+                Unsave
+              </button>
+            </div>
+          ) : (
+            <button
+              className="btn btn-sm btn-outline-info mt-2"
+              onClick={() => saveToBookmarks(blog.title)}
+            >
+              Save for Later
+            </button>
+          )}
       </div>
     </div>
   ))}
