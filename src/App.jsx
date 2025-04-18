@@ -21,6 +21,7 @@ import SearchByCategory from "./SearchByCategory"
 import './App.css'
 import AdminFeedback from './AdminFeedback';
 import Feedback from './Feedback';
+import SavedBlogs from './SavedBlogs';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                <Route path='/logout' element={<Logout /> }/>
                <Route path='/subscribe' element={<Subscribe />} />
                <Route path='/feedback' element={<Feedback />} />
+               <Route path='/savedblogs' element={<SavedBlogs />} />
            </Route>
          <Route path='/signin' element={<Signin />} />
          <Route path='/signup' element={<Signup />} />

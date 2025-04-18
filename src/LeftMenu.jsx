@@ -97,7 +97,11 @@ export default function LeftMenu() {
 
           {role !== "ADMIN" && <li><Link to="/subscribe">{subscribe=== false ? "Subscribe" : "Upgrade Your Plan"}</Link></li>}
 
-         { user &&  role === "NORMAL" && <li><a href="/Feedback">Feedback</a></li>}
+         { user &&  role === "NORMAL" && <>
+          <li><a href="/Feedback">Feedback</a></li>
+          <li><a href="/savedblogs">Saved Blogs</a></li>
+         </>
+          }
          { user && <li><a href="/logout">Logout</a></li>}
          { !user && <li><a href="/signin">Sign In</a></li>}
         </ul>
