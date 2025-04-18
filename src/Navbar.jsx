@@ -10,10 +10,21 @@ const Navbar = () => {
 
  
      useEffect(() => {
-      const loggedInUser = localStorage.getItem("LoggedInUser");
-      if (loggedInUser) {
-        setUser(loggedInUser);
-      }
+      const handleStorageChange = () => {
+        const loggedInUser = localStorage.getItem("LoggedInUser");
+        if (loggedInUser) {
+          setUser(loggedInUser);
+        }
+      };
+    
+      window.addEventListener("storage", handleStorageChange);
+    
+      // Optional: Also update state right away
+      handleStorageChange();
+    
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
     }, []);
   return (
     <div>

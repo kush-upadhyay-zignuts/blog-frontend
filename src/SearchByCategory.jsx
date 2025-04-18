@@ -334,12 +334,23 @@ function Home() {
   const autocompleteRef = useRef(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("LoggedInUser");
-    if (loggedInUser) {
-      setUser(loggedInUser);
-    }
-  }, []);
+ useEffect(() => {
+      const handleStorageChange = () => {
+        const loggedInUser = localStorage.getItem("LoggedInUser");
+        if (loggedInUser) {
+          setUser(loggedInUser);
+        }
+      };
+    
+      window.addEventListener("storage", handleStorageChange);
+    
+      // Optional: Also update state right away
+      handleStorageChange();
+    
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
+    }, []);
 
   useEffect(() => {
     if (data?.categories) {

@@ -582,6 +582,24 @@ function Home() {
   
   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
   const { ref, inView } = useInView();
+
+   useEffect(() => {
+        const handleStorageChange = () => {
+          const loggedInUser = localStorage.getItem("LoggedInUser");
+          if (loggedInUser) {
+            setUser(loggedInUser);
+          }
+        };
+      
+        window.addEventListener("storage", handleStorageChange);
+      
+        // Optional: Also update state right away
+        handleStorageChange();
+      
+        return () => {
+          window.removeEventListener("storage", handleStorageChange);
+        };
+      }, []);
   // Load bookmarks from localStorage on mount
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
@@ -597,12 +615,6 @@ function Home() {
     }
   }, [inView]);
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("LoggedInUser");
-    if (loggedInUser) {
-      setUser(loggedInUser);
-    }
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
