@@ -93,7 +93,8 @@ export default function LeftMenu() {
           <li><Link to="/admin/blogs/new">Add New Blog</Link></li>
           <li><Link to="/admin/Categories">All Categories</Link></li>
           <li><Link to="/admin/Categories/new">Add New Category</Link></li>
-          <li><Link to="/admin/feedbacks">Recieved Feedback</Link></li> </> }
+          <li><Link to="/admin/feedbacks">Recieved Feedback</Link></li>
+          <li><a href="/savedblogs">Saved Blogs</a></li> </> }
 
           {role !== "ADMIN" && <li><Link to="/subscribe">{subscribe=== false ? "Subscribe" : "Upgrade Your Plan"}</Link></li>}
 

@@ -70,10 +70,15 @@ useEffect(() => {
       >
         &larr;
       </button>
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
+      {setTimeout(()=>{
+    <div className="d-flex align-items-center justify-content-center min-vh-100">
         <div className="spinner-border text-info" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
+      </div>
+  },2000)}
+     <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <h4>No saved blogs found.</h4>
       </div>
         </>
     );
