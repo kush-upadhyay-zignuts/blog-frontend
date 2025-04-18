@@ -13,7 +13,7 @@ const Navbar = () => {
      const handleSignin = () => {
       navigate("/signin");
     };
-    handleSignup = () => {
+    const handleSignup = () => {
       navigate("/signup");
     };
 
