@@ -554,25 +554,55 @@ function Home() {
   const [bookmarks, setBookmarks] = useState([]);
 
   
+  // const saveToBookmarks = (blogTitle) => {
+  //   let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+  //   if (!updatedBookmarks.includes(blogTitle)) {
+  //     updatedBookmarks.push(blogTitle);
+  //     localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+  //     setBookmarks(updatedBookmarks); // ✅ Update state
+  //   }
+  // };
+  
+  // const removeFromBookmarks = (blogTitle) => {
+  //   let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+  //   updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
+  //   localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+  //   setBookmarks(updatedBookmarks); // ✅ Update state
+  // };
+
+  // const isBookmarked = (blogTitle) => {
+  //   return bookmarks.includes(blogTitle); // ✅ Uses state now
+  // };
   const saveToBookmarks = (blogTitle) => {
-    let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (!currentUser) return;
+  
+    const key = `bookmarks_${currentUser}`;
+    let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
+  
     if (!updatedBookmarks.includes(blogTitle)) {
       updatedBookmarks.push(blogTitle);
-      localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
-      setBookmarks(updatedBookmarks); // ✅ Update state
+      localStorage.setItem(key, JSON.stringify(updatedBookmarks));
+      setBookmarks(updatedBookmarks);
     }
   };
   
   const removeFromBookmarks = (blogTitle) => {
-    let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (!currentUser) return;
+  
+    const key = `bookmarks_${currentUser}`;
+    let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
+  
     updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
-    localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
-    setBookmarks(updatedBookmarks); // ✅ Update state
+    localStorage.setItem(key, JSON.stringify(updatedBookmarks));
+    setBookmarks(updatedBookmarks);
   };
-
+  
   const isBookmarked = (blogTitle) => {
-    return bookmarks.includes(blogTitle); // ✅ Uses state now
+    return bookmarks.includes(blogTitle);
   };
+  
   
   // Infinite scroll logic
   const getKey = (pageIndex, previousPageData) => {

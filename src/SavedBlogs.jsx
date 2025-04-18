@@ -11,11 +11,20 @@ const SavedBlogs = () => {
   const [allBlogs, setAllBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
 
-  useEffect(() => {
-    // Load bookmarks from localStorage
-    const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
-    setBookmarkedTitles(saved);
+//   useEffect(() => {
+//     // Load bookmarks from localStorage
+//     const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
+//     setBookmarkedTitles(saved);
+//   }, []);
+useEffect(() => {
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (currentUser) {
+      const key = `bookmarks_${currentUser}`;
+      const saved = JSON.parse(localStorage.getItem(key)) || [];
+      setBookmarks(saved);
+    }
   }, []);
+  
 
   useEffect(() => {
     const fetchAllBlogs = async () => {
