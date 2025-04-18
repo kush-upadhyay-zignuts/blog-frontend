@@ -1,12 +1,21 @@
 import React from 'react'
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Navbar = () => {
     const [user, setUser] = useState(""); 
+    const navigate = useNavigate();
 
      const loggedInUser =  localStorage.getItem("LoggedInUser")
+
+     const handleSignin = () => {
+      navigate("/signin");
+    };
+    handleSignup = () => {
+      navigate("/signup");
+    };
 
      useEffect(() => {
          const loggedInUser = localStorage.getItem("LoggedInUser");
@@ -91,8 +100,13 @@ const Navbar = () => {
         <li style={{zIndex: 1250}} ><a className="dropdown-item px-0"  href="/logout">Logout</a></li>
       ) : (
         <>
-          <li style={{zIndex: 1250}} ><a className="dropdown-item px-0" href="/signup">Sign up</a></li>
-          <li style={{zIndex: 1250}} ><a className="dropdown-item px-0" href="/signin">Sign in</a></li>
+          {/* <li style={{zIndex: 1250}} ><a className="dropdown-item px-0" href="/signup">Sign up</a></li> */}
+          <li style={{zIndex: 1250}} > <button onClick={handleSignin} className="dropdown-item px-0">
+                        Sign In
+                        </button></li>
+          <li style={{zIndex: 1250}} ><button onClick={handleSignup} className="dropdown-item px-0">
+                        Sign Up
+                        </button></li>
         </>
       )}
     </ul>
