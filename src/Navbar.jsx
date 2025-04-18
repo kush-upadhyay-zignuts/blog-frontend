@@ -101,11 +101,11 @@ const Navbar = () => {
       ) : (
         <>
           {/* <li style={{zIndex: 1250}} ><a className="dropdown-item px-0" href="/signup">Sign up</a></li> */}
-          <li style={{zIndex: 1250}} > <button onClick={handleSignin} className="dropdown-item px-0">
-                        Sign In
-                        </button></li>
           <li style={{zIndex: 1250}} ><button onClick={handleSignup} className="dropdown-item px-0">
                         Sign Up
+                        </button></li>
+          <li style={{zIndex: 1250}} > <button onClick={handleSignin} className="dropdown-item px-0">
+                        Sign In
                         </button></li>
         </>
       )}

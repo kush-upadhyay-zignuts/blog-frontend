@@ -333,6 +333,28 @@ function Home() {
   const [user, setUser] = useState("");
   const autocompleteRef = useRef(null);
   const navigate = useNavigate();
+  const [bookmarks, setBookmarks] = useState([]);
+
+  
+  const saveToBookmarks = (blogTitle) => {
+    let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    if (!updatedBookmarks.includes(blogTitle)) {
+      updatedBookmarks.push(blogTitle);
+      localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+      setBookmarks(updatedBookmarks); // Update state
+    }
+  };
+  
+  const removeFromBookmarks = (blogTitle) => {
+    let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
+    localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+    setBookmarks(updatedBookmarks); // Update state
+  };
+
+  const isBookmarked = (blogTitle) => {
+    return bookmarks.includes(blogTitle); // Uses state now
+  };
 
  useEffect(() => {
       const handleStorageChange = () => {
@@ -490,32 +512,60 @@ function Home() {
       </nav>
 
       <LeftMenu />
-
       <div className="container" style={{ marginTop: "6rem" }}>
-        {blogs
-          .filter(blog => !catTitle || blog.category === catTitle)
-          .map((blog, idx) => (
-            <Link
-              to={`/${blog.title}`}
-              key={idx}
-              style={{ textDecoration: "none", color: "inherit" }}
+  {blogs.map((blog, idx) => (
+    
+    <div
+      className="d-flex mt-4 mx-auto align-items-center px-5"
+      style={{ width: "80rem" }}
+      key={idx}
+    >
+      <Link
+        to={`/${blog.title}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <img
+          src={blog.imgUrl}
+          className="card-img-top"
+          style={{ width: "20rem", height: "15rem" }}
+          alt={blog.title}
+        />
+
+      </Link>
+      <div className="card-body ms-5" style={{ width: "50rem" }}>
+      <Link
+        to={`/${blog.title}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <h5 className="card-title">{blog.title}</h5>
+        <p className="card-text red overflow-hidden">{blog.description}</p>
+        <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+        </Link>
+
+      {  user &&(isBookmarked(blog.title) ? (
+            <div className="d-flex gap-3 mt-2">
+              <button className="btn btn-sm btn-success" disabled>
+               Saved
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => removeFromBookmarks(blog.title)}
+              >
+                Unsave
+              </button>
+            </div>
+          ) : (
+            <button
+              className="btn btn-sm btn-outline-info mt-2"
+              onClick={() => saveToBookmarks(blog.title)}
             >
-              <div className="d-flex mt-4 mx-auto align-items-center px-5" style={{ width: "80rem" }}>
-                <img
-                  src={blog.imgUrl}
-                  className="card-img-top"
-                  style={{ width: "20rem", height: "15rem" }}
-                  alt={blog.title}
-                />
-                <div className="card-body ms-5" style={{ width: "50rem" }}>
-                  <h5 className="card-title">{blog.title}</h5>
-                  <p className="card-text red overflow-hidden">{blog.description}</p>
-                  <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
-                </div>
-              </div>
-            </Link>
+              Save for Later
+            </button>
           ))}
       </div>
+    </div>
+  ))}
+</div>
     </div>
   );
 }
