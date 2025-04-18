@@ -8,24 +8,30 @@ const Navbar = () => {
 
      const loggedInUser =  localStorage.getItem("LoggedInUser")
 
- 
      useEffect(() => {
-      const handleStorageChange = () => {
-        const loggedInUser = localStorage.getItem("LoggedInUser");
-        if (loggedInUser) {
-          setUser(loggedInUser);
-        }
-      };
+         const loggedInUser = localStorage.getItem("LoggedInUser");
+         if (loggedInUser) {
+           setUser(loggedInUser);
+         }
+     }, []);
+ 
+    //  useEffect(() => {
+    //   const handleStorageChange = () => {
+    //     const loggedInUser = localStorage.getItem("LoggedInUser");
+    //     if (loggedInUser) {
+    //       setUser(loggedInUser);
+    //     }
+    //   };
     
-      window.addEventListener("storage", handleStorageChange);
+    //   window.addEventListener("storage", handleStorageChange);
     
-      // Optional: Also update state right away
-      handleStorageChange();
+    //   // Optional: Also update state right away
+    //   handleStorageChange();
     
-      return () => {
-        window.removeEventListener("storage", handleStorageChange);
-      };
-    }, []);
+    //   return () => {
+    //     window.removeEventListener("storage", handleStorageChange);
+    //   };
+    // }, []);
   return (
     <div>
       <nav className="navbar navbar-expand-lg fixed-top nav-color ">
