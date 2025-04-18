@@ -554,24 +554,24 @@ function Home() {
   const [bookmarks, setBookmarks] = useState([]);
 
   
-  // Save blog to localStorage
   const saveToBookmarks = (blogTitle) => {
-    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-    if (!bookmarks.includes(blogTitle)) {
-      bookmarks.push(blogTitle);
-      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    if (!updatedBookmarks.includes(blogTitle)) {
+      updatedBookmarks.push(blogTitle);
+      localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+      setBookmarks(updatedBookmarks); // ✅ Update state
     }
   };
   
+  const removeFromBookmarks = (blogTitle) => {
+    let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
+    localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
+    setBookmarks(updatedBookmarks); // ✅ Update state
+  };
 
   const isBookmarked = (blogTitle) => {
-    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-    return bookmarks.includes(blogTitle);
-  };
-  const removeFromBookmarks = (blogTitle) => {
-    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-    bookmarks = bookmarks.filter((title) => title !== blogTitle);
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    return bookmarks.includes(blogTitle); // ✅ Uses state now
   };
   
   // Infinite scroll logic
