@@ -203,23 +203,23 @@ const SavedBlogs = () => {
     );
   }
 
-  if (filteredBlogs.length === 0) {
-    return (
-      <>
-        <Navbar />
-        <button
-          onClick={handleGoBack}
-          className="btn btn-light position-absolute m-3 border-0 fs-3"
-          style={{ left: "50px", top: "60px" }}
-        >
-          &larr;
-        </button>
-        <div className="d-flex align-items-center justify-content-center min-vh-100">
-          <h4>No saved blogs found.</h4>
-        </div>
-      </>
-    );
-  }
+//   if (filteredBlogs.length === 0) {
+//     return (
+//       <>
+//         <Navbar />
+//         <button
+//           onClick={handleGoBack}
+//           className="btn btn-light position-absolute m-3 border-0 fs-3"
+//           style={{ left: "50px", top: "60px" }}
+//         >
+//           &larr;
+//         </button>
+//         <div className="d-flex align-items-center justify-content-center min-vh-100">
+//           <h4>No saved blogs found.</h4>
+//         </div>
+//       </>
+//     );
+//   }
 
   return (
     <>
@@ -265,6 +265,9 @@ const SavedBlogs = () => {
             </div>
           </Link>
         ))}
+        {!filteredBlogs && <div className="d-flex align-items-center justify-content-center min-vh-100">
+          <h4>No saved blogs found.</h4>
+        </div>}
       </div>
     </>
   );

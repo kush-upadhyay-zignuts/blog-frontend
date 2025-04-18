@@ -553,26 +553,6 @@ function Home() {
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
 
-  
-  // const saveToBookmarks = (blogTitle) => {
-  //   let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-  //   if (!updatedBookmarks.includes(blogTitle)) {
-  //     updatedBookmarks.push(blogTitle);
-  //     localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
-  //     setBookmarks(updatedBookmarks); // ✅ Update state
-  //   }
-  // };
-  
-  // const removeFromBookmarks = (blogTitle) => {
-  //   let updatedBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-  //   updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
-  //   localStorage.setItem("bookmarks", JSON.stringify(updatedBookmarks));
-  //   setBookmarks(updatedBookmarks); // ✅ Update state
-  // };
-
-  // const isBookmarked = (blogTitle) => {
-  //   return bookmarks.includes(blogTitle); // ✅ Uses state now
-  // };
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
@@ -632,8 +612,12 @@ function Home() {
       }, []);
   // Load bookmarks from localStorage on mount
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("bookmarks")) || [];
-    setBookmarks(saved);
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (currentUser) {
+      const key = `bookmarks_${currentUser}`;
+      const saved = JSON.parse(localStorage.getItem(key)) || [];
+      setBookmarks(saved);
+    }
   }, []);
   
   const blogs = data ? data.flatMap((page) => page.blogs) : [];
@@ -793,29 +777,7 @@ function Home() {
       </nav>
 
       <LeftMenu />
-{/* 
-      <div className="container" style={{ marginTop: "6rem" }}>
-        {blogs.map((blog, idx) => (<>
-            <div className="d-flex mt-4 mx-auto align-items-center px-5" style={{ width: "80rem" }}>
-          <Link to={`/${blog.title}`} key={idx} style={{ textDecoration: "none", color: "inherit" }}>
-              <img src={blog.imgUrl} className="card-img-top" style={{ width: "20rem", height: "15rem" }} alt={blog.title} />
-              <div className="card-body ms-5" style={{ width: "50rem" }}>
-                <h5 className="card-title">{blog.title}</h5>
-                <p className="card-text red overflow-hidden">{blog.description}</p>
-                <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
-              </div>
-          </Link>
-          <button
-              className={`btn btn-sm ${isBookmarked(blog.title) ? "btn-success" : "btn-outline-info"}`}
-              style={{ position: "absolute", top: "10px", right: "10px" }}
-              onClick={() => saveToBookmarks(blog.title)}
-            >
-              {isBookmarked(blog.title) ? "Saved" : "Save for Later"}
-            </button>
-            </div>
-        </>
-        
-        ))} */}
+
         <div className="container" style={{ marginTop: "6rem" }}>
   {blogs.map((blog, idx) => (
     
