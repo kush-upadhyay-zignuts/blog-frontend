@@ -69,7 +69,7 @@ const Navbar = () => {
         {user.trim().charAt(0).toUpperCase()}
       </div>
     )}
-    <ul className="dropdown-menu" >
+    <ul className="dropdown-menu" style={{zIndex: 1250}} >
       {user ? (
         <li><a className="dropdown-item px-0" href="/logout">Logout</a></li>
       ) : (
