@@ -71,11 +71,11 @@ const Navbar = () => {
     )}
     <ul className="dropdown-menu" style={{zIndex: 1250}} >
       {user ? (
-        <li><a className="dropdown-item px-0" href="/logout">Logout</a></li>
+        <li style={{zIndex: 1250}} ><a className="dropdown-item px-0"  href="/logout">Logout</a></li>
       ) : (
         <>
-          <li><a className="dropdown-item px-0" href="/signup">Sign up</a></li>
-          <li><a className="dropdown-item px-0" href="/signin">Sign in</a></li>
+          <li style={{zIndex: 1250}} ><a className="dropdown-item px-0" href="/signup">Sign up</a></li>
+          <li style={{zIndex: 1250}} ><a className="dropdown-item px-0" href="/signin">Sign in</a></li>
         </>
       )}
     </ul>
