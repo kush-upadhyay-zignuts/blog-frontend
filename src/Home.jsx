@@ -804,7 +804,7 @@ function Home() {
         <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
         </Link>
 
-        {user && isBookmarked(blog.title) ? (
+      {  user &&(isBookmarked(blog.title) ? (
             <div className="d-flex gap-3 mt-2">
               <button className="btn btn-sm btn-success" disabled>
                Saved
@@ -823,7 +823,7 @@ function Home() {
             >
               Save for Later
             </button>
-          )}
+          ))}
       </div>
     </div>
   ))}
