@@ -68,8 +68,17 @@ export default function Details() {
   return (
     <>
       <Navbar />
-      {/* Bootstrap progress bar for scroll */}
-      <div className="progress fixed-top" style={{ height: "5px", zIndex: 1050 }}>
+
+      <button
+        onClick={handleGoBack}
+        className="btn btn-light position-absolute m-3 border-0 fs-3"
+        style={{ left: "50px", top: "60px" }}
+      >
+        &larr;
+      </button>
+
+       {/* Bootstrap progress bar for scroll */}
+       <div className="progress fixed-top" style={{ height: "5px", zIndex: 1050 }}>
         <div
           className="progress-bar bg-info"
           role="progressbar"
@@ -79,15 +88,6 @@ export default function Details() {
           aria-valuemax="100"
         ></div>
       </div>
-
-
-      <button
-        onClick={handleGoBack}
-        className="btn btn-light position-absolute m-3 border-0 fs-3"
-        style={{ left: "50px", top: "60px" }}
-      >
-        &larr;
-      </button>
 
       <div className="mx-auto text-center" style={{ width: "80rem", marginTop: "5rem" }}>
         <div className="mx-auto text-start" style={{ width: "50rem" }}>
