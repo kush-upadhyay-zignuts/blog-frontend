@@ -10,6 +10,8 @@ const SavedBlogs = () => {
   const navigate = useNavigate();
   const [allBlogs, setAllBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
 //   useEffect(() => {
 //     // Load bookmarks from localStorage
@@ -49,6 +51,7 @@ useEffect(() => {
       bookmarkedTitles.includes(blog.title)
     );
     setFilteredBlogs(matchedBlogs);
+    setLoading(false);
   }, [bookmarkedTitles, allBlogs]);
 
   setTimeout(()=>{
@@ -59,49 +62,37 @@ useEffect(() => {
       </div>
   },1500)
 
-  if (!filteredBlogs.length) {
+  if (loading) {
     return (
-        <>
-         <Navbar />
-    <button
-        onClick={handleGoBack}
-        className="btn btn-light position-absolute m-3 border-0 fs-3"
-        style={{ left: "50px", top: "60px" }}
-      >
-        &larr;
-      </button>
-      {setTimeout(()=>{
-    <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
+      <>
+        <Navbar />
+        <div className="d-flex align-items-center justify-content-center min-vh-100">
+          <div className="spinner-border text-info" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
-      </div>
-  },2000)}
-     <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <h4>No saved blogs found.</h4>
-      </div>
-        </>
+      </>
     );
   }
 
-  if (filteredBlogs.length === 0) {
+  if (!loading && filteredBlogs.length === 0) {
     return (
-        <>
-         <Navbar />
-    <button
-        onClick={handleGoBack}
-        className="btn btn-light position-absolute m-3 border-0 fs-3"
-        style={{ left: "50px", top: "60px" }}
-      >
-        &larr;
-      </button>
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <h4>No saved blogs found.</h4>
-      </div>
-        </>
+      <>
+        <Navbar />
+        <button
+          onClick={handleGoBack}
+          className="btn btn-light position-absolute m-3 border-0 fs-3"
+          style={{ left: "50px", top: "60px" }}
+        >
+          &larr;
+        </button>
+        <div className="d-flex align-items-center justify-content-center min-vh-100">
+          <h4>No saved blogs found.</h4>
+        </div>
+      </>
     );
   }
-
+  
 
   return (
     <> 
