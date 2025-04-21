@@ -75,15 +75,15 @@ function Home() {
       }
     };
     
-       useEffect(() => {
-            const loggedInUser = localStorage.getItem("LoggedInUser");
-            if (loggedInUser) {
-              setUser(loggedInUser);
-            }                              
-          }, []);
     
     fetchBlogs();
   }, []);
+  useEffect(() => {
+       const loggedInUser = localStorage.getItem("LoggedInUser");
+       if (loggedInUser) {
+         setUser(loggedInUser);
+       }                              
+     }, []);
 
   useEffect(() => {
     // Event listener to detect clicks outside of the autocomplete suggestions
