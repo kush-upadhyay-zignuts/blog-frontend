@@ -384,8 +384,7 @@ function Home() {
           </div>
 
         )) }
-    {blogs
-    .filter(blog => !catTitle || blog.category === catTitle).length === 0 && <h2>No Blog is Found</h2>}
+    { !loading && blogs.filter(blog => !catTitle || blog.category === catTitle).length === 0 && <h2 style={{textAlign:"center"}}>No Blog is Found</h2>}
       </div>
     </div>
   );
