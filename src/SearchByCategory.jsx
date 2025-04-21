@@ -926,8 +926,6 @@
 
 
 
-
-
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./index.css";
@@ -945,7 +943,8 @@ function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
-  const [blogs, setBlogs] = useState([]);  // State to store all blogs
+  const [blogs, setBlogs] = useState([]); // State to store all blogs
+  const [categories, setCategories] = useState([]); // State to store unique categories
 
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
@@ -977,14 +976,18 @@ function Home() {
     return bookmarks.includes(blogTitle);
   };
 
-  // Fetch blogs data on component mount
+  // Fetch blogs data and categories on component mount
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const response = await fetch("https://blog-backend-1-5vcb.onrender.com/api/blogs");
         const data = await response.json();
         setBlogs(data.blogs);
-        setFilteredBlogs(data.blogs);  // Set all blogs as filtered initially
+        setFilteredBlogs(data.blogs); // Set all blogs as filtered initially
+        
+        // Extract unique categories from the fetched blogs
+        const uniqueCategories = [...new Set(data.blogs.map(blog => blog.category))];
+        setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
@@ -1020,31 +1023,34 @@ function Home() {
     }
   }, []);
 
+  // Handle the input change and filter categories
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInput(value);
     setIsOpen(true);
 
     if (value) {
-      const results = blogs.filter((blog) =>
-        blog.category.toLowerCase().includes(value.toLowerCase())
+      const results = categories.filter((category) =>
+        category.toLowerCase().includes(value.toLowerCase())
       );
-      setFilteredBlogs(results);
+      setFilteredBlogs(blogs.filter(blog => results.includes(blog.category)));  // Filter blogs by categories
     } else {
-      setFilteredBlogs(blogs);
+      setFilteredBlogs(blogs); // If no input, show all blogs
     }
   };
 
+  // Handle suggestion click and update input field
   const handleSelectSuggestion = (category) => {
     setInput(category);
     setIsOpen(false);
+    setFilteredBlogs(blogs.filter(blog => blog.category === category));  // Filter blogs by selected category
   };
 
+  // Handle search button click
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (input) {
-      const filteredBlogsByCategory = blogs.filter(blog => blog.category.toLowerCase() === input.toLowerCase());
-      setFilteredBlogs(filteredBlogsByCategory);
+      setFilteredBlogs(blogs.filter(blog => blog.category.toLowerCase() === input.toLowerCase())); // Filter blogs by category
     }
   };
 
@@ -1103,13 +1109,13 @@ function Home() {
                       borderRadius: "4px",
                     }}
                   >
-                    {blogs.map((blog, idx) => (
+                    {categories.map((category, idx) => (
                       <li
                         key={idx}
-                        onClick={() => handleSelectSuggestion(blog.category)}
+                        onClick={() => handleSelectSuggestion(category)}
                         style={{ cursor: "pointer" }}
                       >
-                        {blog.category}
+                        {category}
                       </li>
                     ))}
                   </ul>
