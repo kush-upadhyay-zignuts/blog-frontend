@@ -5,6 +5,7 @@ import './index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Navbar from "./Navbar";
+import SpeechDial from "./SpeechDial";
 
 const fetcher = (url) => fetch(url, { credentials: 'include' }).then(res => res.json());
 
@@ -138,6 +139,8 @@ export default function Details() {
           </div>
         </div>
       </div>
+      {user && <SpeechDial text={blog.description} />
+      }
     </>
   );
 }
