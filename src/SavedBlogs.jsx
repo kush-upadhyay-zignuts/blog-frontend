@@ -270,7 +270,7 @@ const SavedBlogs = () => {
             <span className="visually-hidden">Loading...</span>
           </div>
         </div> }
-        {filteredBlogs.length === 0 && <div className="d-flex align-items-center justify-content-center min-vh-100">
+        {!loading && filteredBlogs.length === 0 && <div className="d-flex align-items-center justify-content-center min-vh-100">
            <h4>No saved blogs found.</h4>
 
         </div>}
