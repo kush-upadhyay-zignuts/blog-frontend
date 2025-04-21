@@ -582,6 +582,383 @@
 // export default Home;
 
 
+
+
+
+
+
+// import { useEffect, useRef, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import useSWRInfinite from "swr/infinite";
+// import { useInView } from "react-intersection-observer";
+// import "./index.css";
+// import LeftMenu from "./LeftMenu";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
+// const PAGE_SIZE = 5;
+
+// const fetcher = (url) => fetch(url).then((res) => res.json());
+
+// function Home() {
+//   const navigate = useNavigate();
+//   const autocompleteRef = useRef(null);
+//   const [input, setInput] = useState("");
+//   const [filteredBlogs, setFilteredBlogs] = useState([]);
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [user, setUser] = useState("");
+//   const [bookmarks, setBookmarks] = useState([]);
+//   const [catTitle,setCatTitle] = useState("")
+//   const [categories, setCategories] = useState([]);
+
+
+//   const saveToBookmarks = (blogTitle) => {
+//     const currentUser = localStorage.getItem("LoggedInUser");
+//     if (!currentUser) return;
+  
+//     const key = `bookmarks_${currentUser}`;
+//     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
+  
+//     if (!updatedBookmarks.includes(blogTitle)) {
+//       updatedBookmarks.push(blogTitle);
+//       localStorage.setItem(key, JSON.stringify(updatedBookmarks));
+//       setBookmarks(updatedBookmarks);
+//     }
+//   };
+  
+//   const removeFromBookmarks = (blogTitle) => {
+//     const currentUser = localStorage.getItem("LoggedInUser");
+//     if (!currentUser) return;
+  
+//     const key = `bookmarks_${currentUser}`;
+//     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
+  
+//     updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
+//     localStorage.setItem(key, JSON.stringify(updatedBookmarks));
+//     setBookmarks(updatedBookmarks);
+//   };
+  
+//   const isBookmarked = (blogTitle) => {
+//     return bookmarks.includes(blogTitle);
+//   };
+//   const fetchCategories = async () => {
+//     const res = await fetch("https://blog-backend-1-5vcb.onrender.com/api/admin/categories");
+//     const data = await res.json();
+//     return data.categories;
+//   };
+  
+  
+  
+//   // Infinite scroll logic
+//   const getKey = (pageIndex, previousPageData) => {
+//     if (previousPageData && previousPageData.blogs.length === 0) return null;
+//     return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
+//   };
+  
+//   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
+//   const { ref, inView } = useInView();
+
+//   useEffect(() => {
+//     fetchCategories().then((allCategories) => {
+//       const titles = allCategories.map((cat) => cat.title);
+//       setCategories(titles);
+//     });
+//   }, []);
+  
+
+//    useEffect(() => {
+//         const handleStorageChange = () => {
+//           const loggedInUser = localStorage.getItem("LoggedInUser");
+//           if (loggedInUser) {
+//             setUser(loggedInUser);
+//           }
+//         };
+      
+//         window.addEventListener("storage", handleStorageChange);
+      
+//         // Optional: Also update state right away
+//         handleStorageChange();
+      
+//         return () => {
+//           window.removeEventListener("storage", handleStorageChange);
+//         };
+//       }, []);
+//   // Load bookmarks from localStorage on mount
+//   useEffect(() => {
+//     const currentUser = localStorage.getItem("LoggedInUser");
+//     if (currentUser) {
+//       const key = `bookmarks_${currentUser}`;
+//       const saved = JSON.parse(localStorage.getItem(key)) || [];
+//       setBookmarks(saved);
+//     }
+//   }, []);
+  
+//   const blogs = data ? data.flatMap((page) => page.blogs) : [];
+//   const isReachingEnd = data && data[data.length - 1]?.hasMore === false;
+
+//   useEffect(() => {
+//     if (inView && !isReachingEnd) {
+//       setSize(size + 1);
+//     }
+//   }, [inView]);
+
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (autocompleteRef.current && !autocompleteRef.current.contains(event.target)) {
+//         setIsOpen(false);
+//       }
+//     };
+
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
+
+//   // const handleInputChange = (e) => {
+//   //   const value = e.target.value;
+//   //   setInput(value);
+//   //   setIsOpen(true);
+
+//   //   if (value) {
+//   //     const results = blogs.filter((blog) =>
+//   //       blog.category.toLowerCase().includes(value.toLowerCase())
+//   //     );
+//   //     setFilteredBlogs(results);
+//   //   } else {
+//   //     setFilteredBlogs(blogs);
+//   //   }
+//   // };
+//   const handleInputChange = (e) => {
+//     const value = e.target.value;
+//     setInput(value);
+//     setIsOpen(true);
+  
+//     const results = categories.filter((cat) =>
+//       cat.toLowerCase().includes(value.toLowerCase())
+//     );
+//     setFilteredBlogs(results); // filtered *categories* now
+//   };
+  
+//   const handleSelectSuggestion = (category) => {
+//     setInput(category);
+//     setCatTitle(category); // trigger category-based filter
+//     setIsOpen(false);
+//   };
+  
+//   // const handleSearchSubmit = (e) => {
+//   //   e.preventDefault();
+//   //   if (input) {
+//   //     navigate(`/${input}`);
+//   //   }
+//   // };
+//   const handleSearchSubmit = (e) => {
+//         e.preventDefault();
+//         if (input) {
+//           // window.location.href = `/${input}`;
+//         setCatTitle(input)
+          
+//         //   navigate(`/${input}`)
+//         }
+//         else{
+//             setCatTitle("")
+//         }
+//       };
+
+//   if (isLoading && blogs.length === 0) {
+//     return (
+//       <div className="d-flex align-items-center justify-content-center min-vh-100">
+//         <div className="spinner-border text-info" role="status">
+//           <span className="visually-hidden">Loading...</span>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="d-flex align-items-center justify-content-center min-vh-100">
+//         <div className="h4">Failed to load blogs.</div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div>
+//       {/* Navbar */}
+//       <nav className="navbar fixed-top navbar-expand-lg nav-color">
+//         <div className="container-fluid">
+//           <a className="navbar-brand text-info" href="#">StoryHaven</a>
+//           <button
+//             className="navbar-toggler"
+//             type="button"
+//             data-bs-toggle="collapse"
+//             data-bs-target="#navbarSupportedContent"
+//           >
+//             <span className="navbar-toggler-icon"></span>
+//           </button>
+
+//           <div className="collapse navbar-collapse" id="navbarSupportedContent">
+//             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+//               <div className="d-flex flex-column">
+//                 <form
+//                   className="d-flex search"
+//                   autoComplete="off"
+//                   onSubmit={handleSearchSubmit}
+//                 >
+//                   <input
+//                     className="form-control me-2"
+//                     type="search"
+//                     placeholder="Search By Category"
+//                     value={input}
+//                     onChange={handleInputChange}
+//                   />
+//                   <button className="btn btn-outline-success text-light" type="submit">
+//                     Search
+//                   </button>
+//                 </form>
+
+//                 {isOpen && (
+//                   <ul
+//                     className="autocomplete overflow-auto"
+//                     ref={autocompleteRef}
+//                     style={{
+//                       maxHeight: "200px",
+//                       border: "1px solid #ccc",
+//                       borderRadius: "4px",
+//                     }}
+//                   >
+//                     {filteredBlogs.map((blog, idx) => (
+//                       <li
+//                         key={idx}
+//                         onClick={() => handleSelectSuggestion(blog.category)}
+//                         style={{ cursor: "pointer" }}
+//                       >
+//                         {blog.category}
+//                       </li>
+//                     ))}
+//                   </ul>
+//                 )}
+//               </div>
+//             </ul>
+
+//             <div className="d-flex align-items-center ms-auto me-2">
+//               <div className="dropdown bg-transparent">
+//                 {!user ? (
+//                   <button className="btn text-white dropdown-toggle me-2" data-bs-toggle="dropdown">
+//                     Login
+//                   </button>
+//                 ) : (
+//                   <div
+//                     className="d-flex align-items-center justify-content-center dropdown-toggle btn rounded-circle bg-info text-white me-2"
+//                     data-bs-toggle="dropdown"
+//                     style={{ width: "50px", height: "50px", fontSize: "25px", fontWeight: "bold" }}
+//                   >
+//                     {user.trim().charAt(0).toUpperCase()}
+//                   </div>
+//                 )}
+//                 <ul className="dropdown-menu">
+//                   {user ? (
+//                     <li><a className="dropdown-item px-0" href="/logout">Logout</a></li>
+//                   ) : (
+//                     <>
+//                       <li><a className="dropdown-item px-0" href="/signup">Sign up</a></li>
+//                       <li><a className="dropdown-item px-0" href="/signin">Sign in</a></li>
+//                     </>
+//                   )}
+//                 </ul>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </nav>
+
+//       <LeftMenu />
+
+//         <div className="container" style={{ marginTop: "6rem" }}>
+
+
+
+//   {
+//     blogs
+//        .filter(blog => !catTitle || blog.category === catTitle)
+//        .map((blog, idx) => (
+    
+//     <div
+//       className="d-flex mt-4 mx-auto align-items-center px-5"
+//       style={{ width: "80rem" }}
+//       key={idx}
+//     >
+//       <Link
+//         to={`/${blog.title}`}
+//         style={{ textDecoration: "none", color: "inherit" }}
+//       >
+//         <img
+//           src={blog.imgUrl}
+//           className="card-img-top"
+//           style={{ width: "20rem", height: "15rem" }}
+//           alt={blog.title}
+//         />
+
+//       </Link>
+//       <div className="card-body ms-5" style={{ width: "50rem" }}>
+//       <Link
+//         to={`/${blog.title}`}
+//         style={{ textDecoration: "none", color: "inherit" }}
+//       >
+//         <h5 className="card-title">{blog.title}</h5>
+//         <p className="card-text red overflow-hidden">{blog.description}</p>
+//         <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+//         </Link>
+
+//       {  user &&(isBookmarked(blog.title) ? (
+//             <div className="d-flex gap-3 mt-2">
+//               <button className="btn btn-sm btn-success" disabled>
+//                Saved
+//               </button>
+//               <button
+//                 className="btn btn-sm btn-outline-danger"
+//                 onClick={() => removeFromBookmarks(blog.title)}
+//               >
+//                 Unsave
+//               </button>
+//             </div>
+//           ) : (
+//             <button
+//               className="btn btn-sm btn-outline-info mt-2"
+//               onClick={() => saveToBookmarks(blog.title)}
+//             >
+//               Save for Later
+//             </button>
+//           ))}
+//       </div>
+//     </div>
+//   ))}
+// </div>
+
+//         <div ref={ref} className="text-center py-4">
+//           {isReachingEnd ? (
+//             <p>No more blogs to load.</p>
+//           ) : (
+//             <div className="spinner-border text-info" role="status">
+//               <span className="visually-hidden">Loading more...</span>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+   
+//   );
+// }
+
+// export default Home;
+
+
+
+
+
+
+
+
+
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useSWRInfinite from "swr/infinite";
@@ -599,86 +976,74 @@ function Home() {
   const navigate = useNavigate();
   const autocompleteRef = useRef(null);
   const [input, setInput] = useState("");
-  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
-  const [catTitle,setCatTitle] = useState("")
-  const [categories, setCategories] = useState([]);
-
+  const [catTitle, setCatTitle] = useState("");
 
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-  
+
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-  
+
     if (!updatedBookmarks.includes(blogTitle)) {
       updatedBookmarks.push(blogTitle);
       localStorage.setItem(key, JSON.stringify(updatedBookmarks));
       setBookmarks(updatedBookmarks);
     }
   };
-  
+
   const removeFromBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-  
+
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-  
+
     updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
     localStorage.setItem(key, JSON.stringify(updatedBookmarks));
     setBookmarks(updatedBookmarks);
   };
-  
+
   const isBookmarked = (blogTitle) => {
     return bookmarks.includes(blogTitle);
   };
-  const fetchCategories = async () => {
-    const res = await fetch("https://blog-backend-1-5vcb.onrender.com/api/admin/categories");
-    const data = await res.json();
-    return data.categories;
-  };
-  
-  
-  
-  // Infinite scroll logic
+
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && previousPageData.blogs.length === 0) return null;
     return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
   };
-  
+
   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
   const { ref, inView } = useInView();
 
+  // Fetch all categories on load
   useEffect(() => {
-    fetchCategories().then((allCategories) => {
-      const titles = allCategories.map((cat) => cat.title);
+    const fetchCategories = async () => {
+      const res = await fetch("https://blog-backend-1-5vcb.onrender.com/api/admin/categories");
+      const data = await res.json();
+      const titles = data.map((cat) => cat.title);
       setCategories(titles);
-    });
+    };
+    fetchCategories();
   }, []);
-  
 
-   useEffect(() => {
-        const handleStorageChange = () => {
-          const loggedInUser = localStorage.getItem("LoggedInUser");
-          if (loggedInUser) {
-            setUser(loggedInUser);
-          }
-        };
-      
-        window.addEventListener("storage", handleStorageChange);
-      
-        // Optional: Also update state right away
-        handleStorageChange();
-      
-        return () => {
-          window.removeEventListener("storage", handleStorageChange);
-        };
-      }, []);
-  // Load bookmarks from localStorage on mount
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const loggedInUser = localStorage.getItem("LoggedInUser");
+      if (loggedInUser) {
+        setUser(loggedInUser);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    handleStorageChange();
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   useEffect(() => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (currentUser) {
@@ -687,7 +1052,7 @@ function Home() {
       setBookmarks(saved);
     }
   }, []);
-  
+
   const blogs = data ? data.flatMap((page) => page.blogs) : [];
   const isReachingEnd = data && data[data.length - 1]?.hasMore === false;
 
@@ -697,67 +1062,37 @@ function Home() {
     }
   }, [inView]);
 
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (autocompleteRef.current && !autocompleteRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // const handleInputChange = (e) => {
-  //   const value = e.target.value;
-  //   setInput(value);
-  //   setIsOpen(true);
-
-  //   if (value) {
-  //     const results = blogs.filter((blog) =>
-  //       blog.category.toLowerCase().includes(value.toLowerCase())
-  //     );
-  //     setFilteredBlogs(results);
-  //   } else {
-  //     setFilteredBlogs(blogs);
-  //   }
-  // };
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInput(value);
     setIsOpen(true);
-  
+
     const results = categories.filter((cat) =>
       cat.toLowerCase().includes(value.toLowerCase())
     );
-    setFilteredBlogs(results); // filtered *categories* now
+    setFilteredCategories(results);
   };
-  
+
   const handleSelectSuggestion = (category) => {
     setInput(category);
-    setCatTitle(category); // trigger category-based filter
+    setCatTitle(category);
     setIsOpen(false);
   };
-  
-  // const handleSearchSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (input) {
-  //     navigate(`/${input}`);
-  //   }
-  // };
+
   const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        if (input) {
-          // window.location.href = `/${input}`;
-        setCatTitle(input)
-          
-        //   navigate(`/${input}`)
-        }
-        else{
-            setCatTitle("")
-        }
-      };
+    e.preventDefault();
+    setCatTitle(input || "");
+  };
 
   if (isLoading && blogs.length === 0) {
     return (
@@ -779,27 +1114,17 @@ function Home() {
 
   return (
     <div>
-      {/* Navbar */}
       <nav className="navbar fixed-top navbar-expand-lg nav-color">
         <div className="container-fluid">
           <a className="navbar-brand text-info" href="#">StoryHaven</a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-          >
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
             <span className="navbar-toggler-icon"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <div className="d-flex flex-column">
-                <form
-                  className="d-flex search"
-                  autoComplete="off"
-                  onSubmit={handleSearchSubmit}
-                >
+                <form className="d-flex search" autoComplete="off" onSubmit={handleSearchSubmit}>
                   <input
                     className="form-control me-2"
                     type="search"
@@ -813,22 +1138,10 @@ function Home() {
                 </form>
 
                 {isOpen && (
-                  <ul
-                    className="autocomplete overflow-auto"
-                    ref={autocompleteRef}
-                    style={{
-                      maxHeight: "200px",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    {filteredBlogs.map((blog, idx) => (
-                      <li
-                        key={idx}
-                        onClick={() => handleSelectSuggestion(blog.category)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {blog.category}
+                  <ul className="autocomplete overflow-auto" ref={autocompleteRef} style={{ maxHeight: "200px", border: "1px solid #ccc", borderRadius: "4px" }}>
+                    {filteredCategories.map((cat, idx) => (
+                      <li key={idx} onClick={() => handleSelectSuggestion(cat)} style={{ cursor: "pointer" }}>
+                        {cat}
                       </li>
                     ))}
                   </ul>
@@ -869,78 +1182,44 @@ function Home() {
 
       <LeftMenu />
 
-        <div className="container" style={{ marginTop: "6rem" }}>
+      <div className="container" style={{ marginTop: "6rem" }}>
+        {blogs
+          .filter(blog => !catTitle || blog.category === catTitle)
+          .map((blog, idx) => (
+            <div className="d-flex mt-4 mx-auto align-items-center px-5" style={{ width: "80rem" }} key={idx}>
+              <Link to={`/${blog.title}`} style={{ textDecoration: "none", color: "inherit" }}>
+                <img src={blog.imgUrl} className="card-img-top" style={{ width: "20rem", height: "15rem" }} alt={blog.title} />
+              </Link>
+              <div className="card-body ms-5" style={{ width: "50rem" }}>
+                <Link to={`/${blog.title}`} style={{ textDecoration: "none", color: "inherit" }}>
+                  <h5 className="card-title">{blog.title}</h5>
+                  <p className="card-text red overflow-hidden">{blog.description}</p>
+                  <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+                </Link>
 
-
-
-  {
-    blogs
-       .filter(blog => !catTitle || blog.category === catTitle)
-       .map((blog, idx) => (
-    
-    <div
-      className="d-flex mt-4 mx-auto align-items-center px-5"
-      style={{ width: "80rem" }}
-      key={idx}
-    >
-      <Link
-        to={`/${blog.title}`}
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <img
-          src={blog.imgUrl}
-          className="card-img-top"
-          style={{ width: "20rem", height: "15rem" }}
-          alt={blog.title}
-        />
-
-      </Link>
-      <div className="card-body ms-5" style={{ width: "50rem" }}>
-      <Link
-        to={`/${blog.title}`}
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <h5 className="card-title">{blog.title}</h5>
-        <p className="card-text red overflow-hidden">{blog.description}</p>
-        <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
-        </Link>
-
-      {  user &&(isBookmarked(blog.title) ? (
-            <div className="d-flex gap-3 mt-2">
-              <button className="btn btn-sm btn-success" disabled>
-               Saved
-              </button>
-              <button
-                className="btn btn-sm btn-outline-danger"
-                onClick={() => removeFromBookmarks(blog.title)}
-              >
-                Unsave
-              </button>
+                {user && (isBookmarked(blog.title) ? (
+                  <div className="d-flex gap-3 mt-2">
+                    <button className="btn btn-sm btn-success" disabled>Saved</button>
+                    <button className="btn btn-sm btn-outline-danger" onClick={() => removeFromBookmarks(blog.title)}>Unsave</button>
+                  </div>
+                ) : (
+                  <button className="btn btn-sm btn-outline-info mt-2" onClick={() => saveToBookmarks(blog.title)}>Save for Later</button>
+                ))}
+              </div>
             </div>
-          ) : (
-            <button
-              className="btn btn-sm btn-outline-info mt-2"
-              onClick={() => saveToBookmarks(blog.title)}
-            >
-              Save for Later
-            </button>
           ))}
       </div>
-    </div>
-  ))}
-</div>
 
-        <div ref={ref} className="text-center py-4">
-          {isReachingEnd ? (
-            <p>No more blogs to load.</p>
-          ) : (
-            <div className="spinner-border text-info" role="status">
-              <span className="visually-hidden">Loading more...</span>
-            </div>
-          )}
-        </div>
+      <div ref={ref} className="text-center py-4">
+        {isReachingEnd ? (
+          <p>No more blogs to load.</p>
+        ) : (
+          <div className="spinner-border text-info" role="status">
+            <span className="visually-hidden">Loading more...</span>
+          </div>
+        )}
       </div>
-   
+    </div>
   );
 }
 
