@@ -278,54 +278,103 @@ function Home() {
        { blogs
     .filter(blog => !catTitle || blog.category === catTitle)
     .map((blog, idx) => (
-       <>  
-           <Link
-            to={`/${blog.title}`}
-            key={idx}
-            style={{ textDecoration: "none", color: "inherit" }}
-            >
-             <div key={idx} style={{ textDecoration: "none", color: "inherit" }} >
+      //  <>  
+      //      <Link
+      //       to={`/${blog.title}`}
+      //       key={idx}
+      //       style={{ textDecoration: "none", color: "inherit" }}
+      //       >
+      //        <div key={idx} style={{ textDecoration: "none", color: "inherit" }} >
 
           
-            <div
-              className="d-flex mt-4 mx-auto align-items-center px-5"
-              style={{ width: "80rem" }}
-              >
+      //       <div
+      //         className="d-flex mt-4 mx-auto align-items-center px-5"
+      //         style={{ width: "80rem" }}
+      //         >
+      //         <img
+      //           src={blog.imgUrl}
+      //           className="card-img-top"
+      //           style={{ width: "20rem", height: "15rem" }}
+      //           alt={blog.title}
+      //           />
+      //         <div className="card-body ms-5" style={{ width: "50rem" }}>
+      //           <h5 className="card-title">{blog.title}</h5>
+      //           <p className="card-text red overflow-hidden">{blog.description}</p>
+      //           <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
+      //         </div>
+      //       </div>
+      //       </div> 
+      //       </Link>
+      //         {user && (isBookmarked(blog.title) ? (
+      //           <div className="d-flex gap-3 mt-2">
+      //                             <button className="btn btn-sm btn-success" disabled>
+      //                               Saved
+      //                             </button>
+      //                             <button
+      //                               className="btn btn-sm btn-outline-danger"
+      //                               onClick={() => removeFromBookmarks(blog.title)}
+      //                               >
+      //                               Unsave
+      //                             </button>
+      //                           </div>
+      //                         ) : (
+      //                           <button
+      //                           className="btn btn-sm btn-outline-info mt-2"
+      //                           onClick={() => saveToBookmarks(blog.title)}
+      //                           >
+      //                             Save for Later
+      //                           </button>
+      //                         ))}
+      //                         </>
+      <div
+            className="d-flex mt-4 mx-auto align-items-center px-5"
+            style={{ width: "80rem" }}
+            key={idx}
+          >
+            <Link
+              to={`/${blog.title}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <img
                 src={blog.imgUrl}
                 className="card-img-top"
                 style={{ width: "20rem", height: "15rem" }}
                 alt={blog.title}
-                />
-              <div className="card-body ms-5" style={{ width: "50rem" }}>
+              />
+            </Link>
+            <div className="card-body ms-5" style={{ width: "50rem" }}>
+              <Link
+                to={`/${blog.title}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 <h5 className="card-title">{blog.title}</h5>
                 <p className="card-text red overflow-hidden">{blog.description}</p>
                 <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
-              </div>
-            </div>
-            </div> 
-            </Link>
+              </Link>
+
               {user && (isBookmarked(blog.title) ? (
                 <div className="d-flex gap-3 mt-2">
-                                  <button className="btn btn-sm btn-success" disabled>
-                                    Saved
-                                  </button>
-                                  <button
-                                    className="btn btn-sm btn-outline-danger"
-                                    onClick={() => removeFromBookmarks(blog.title)}
-                                    >
-                                    Unsave
-                                  </button>
-                                </div>
-                              ) : (
-                                <button
-                                className="btn btn-sm btn-outline-info mt-2"
-                                onClick={() => saveToBookmarks(blog.title)}
-                                >
-                                  Save for Later
-                                </button>
-                              ))}
-                              </>
+                  <button className="btn btn-sm btn-success" disabled>
+                    Saved
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => removeFromBookmarks(blog.title)}
+                  >
+                    Unsave
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="btn btn-sm btn-outline-info mt-2"
+                  onClick={() => saveToBookmarks(blog.title)}
+                >
+                  Save for Later
+                </button>
+              ))}
+            </div>
+          </div>
+
         )) }
    
       </div>
