@@ -23,46 +23,39 @@ function Home() {
 
 
 
-
-   useEffect(() => {
-        const loggedInUser = localStorage.getItem("LoggedInUser");
-        if (loggedInUser) {
-          setUser(loggedInUser);
-        }                              
-      }, []);
-
-
+  
+  
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-
+    
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-
+    
     if (!updatedBookmarks.includes(blogTitle)) {
       updatedBookmarks.push(blogTitle);
       localStorage.setItem(key, JSON.stringify(updatedBookmarks));
       setBookmarks(updatedBookmarks);
     }
   };
-
+  
   const removeFromBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-
+    
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-
+    
     updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
     localStorage.setItem(key, JSON.stringify(updatedBookmarks));
     setBookmarks(updatedBookmarks);
   };
-
+  
   const isBookmarked = (blogTitle) => {
     return bookmarks.includes(blogTitle);
   };
-
-
+  
+  
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -81,7 +74,14 @@ function Home() {
         console.error('Error fetching blogs:', err.message);
       }
     };
-  
+    
+       useEffect(() => {
+            const loggedInUser = localStorage.getItem("LoggedInUser");
+            if (loggedInUser) {
+              setUser(loggedInUser);
+            }                              
+          }, []);
+    
     fetchBlogs();
   }, []);
 
