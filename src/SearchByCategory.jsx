@@ -930,14 +930,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useSWRInfinite from "swr/infinite";
-import { useInView } from "react-intersection-observer";
 import "./index.css";
 import LeftMenu from "./LeftMenu";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
-const PAGE_SIZE = 5;
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -949,63 +945,71 @@ function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
+  const [blogs, setBlogs] = useState([]);  // State to store all blogs
 
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-  
+
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-  
+
     if (!updatedBookmarks.includes(blogTitle)) {
       updatedBookmarks.push(blogTitle);
       localStorage.setItem(key, JSON.stringify(updatedBookmarks));
       setBookmarks(updatedBookmarks);
     }
   };
-  
+
   const removeFromBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-  
+
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-  
+
     updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
     localStorage.setItem(key, JSON.stringify(updatedBookmarks));
     setBookmarks(updatedBookmarks);
   };
-  
+
   const isBookmarked = (blogTitle) => {
     return bookmarks.includes(blogTitle);
   };
-  
-  // Infinite scroll logic
-  const getKey = (pageIndex, previousPageData) => {
-    if (previousPageData && previousPageData.blogs.length === 0) return null;
-    return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
-  };
-  
-  const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
-  const { ref, inView } = useInView();
+
+  // Fetch blogs data on component mount
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await fetch("https://blog-backend-1-5vcb.onrender.com/api/blogs");
+        const data = await response.json();
+        setBlogs(data.blogs);
+        setFilteredBlogs(data.blogs);  // Set all blogs as filtered initially
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   useEffect(() => {
-        const handleStorageChange = () => {
-          const loggedInUser = localStorage.getItem("LoggedInUser");
-          if (loggedInUser) {
-            setUser(loggedInUser);
-          }
-        };
-      
-        window.addEventListener("storage", handleStorageChange);
-      
-        handleStorageChange();
-      
-        return () => {
-          window.removeEventListener("storage", handleStorageChange);
-        };
-      }, []);
-  
+    const handleStorageChange = () => {
+      const loggedInUser = localStorage.getItem("LoggedInUser");
+      if (loggedInUser) {
+        setUser(loggedInUser);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    handleStorageChange();
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   // Load bookmarks from localStorage on mount
   useEffect(() => {
     const currentUser = localStorage.getItem("LoggedInUser");
@@ -1014,26 +1018,6 @@ function Home() {
       const saved = JSON.parse(localStorage.getItem(key)) || [];
       setBookmarks(saved);
     }
-  }, []);
-
-  const blogs = data ? data.flatMap((page) => page.blogs) : [];
-  const isReachingEnd = data && data[data.length - 1]?.hasMore === false;
-
-  useEffect(() => {
-    if (inView && !isReachingEnd) {
-      setSize(size + 1);
-    }
-  }, [inView]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (autocompleteRef.current && !autocompleteRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleInputChange = (e) => {
@@ -1064,20 +1048,12 @@ function Home() {
     }
   };
 
-  if (isLoading && blogs.length === 0) {
+  if (blogs.length === 0) {
     return (
       <div className="d-flex align-items-center justify-content-center min-vh-100">
         <div className="spinner-border text-info" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="h4">Failed to load blogs.</div>
       </div>
     );
   }
@@ -1226,19 +1202,8 @@ function Home() {
           </div>
         ))}
       </div>
-
-      <div ref={ref} className="text-center py-4">
-        {isReachingEnd ? (
-          <p>No more blogs to load.</p>
-        ) : (
-          <div className="spinner-border text-info" role="status">
-            <span className="visually-hidden">Loading more...</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
 
 export default Home;
-
