@@ -604,6 +604,8 @@ function Home() {
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
   const [catTitle,setCatTitle] = useState("")
+  const [categories, setCategories] = useState([]);
+
 
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
@@ -634,6 +636,12 @@ function Home() {
   const isBookmarked = (blogTitle) => {
     return bookmarks.includes(blogTitle);
   };
+  const fetchCategories = async () => {
+    const res = await fetch("https://blog-backend-1-5vcb.onrender.com/api/admin/categories");
+    const data = await res.json();
+    return data.categories;
+  };
+  
   
   
   // Infinite scroll logic
@@ -644,6 +652,14 @@ function Home() {
   
   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
   const { ref, inView } = useInView();
+
+  useEffect(() => {
+    fetchCategories().then((allCategories) => {
+      const titles = allCategories.map((cat) => cat.title);
+      setCategories(titles);
+    });
+  }, []);
+  
 
    useEffect(() => {
         const handleStorageChange = () => {
@@ -693,26 +709,37 @@ function Home() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // const handleInputChange = (e) => {
+  //   const value = e.target.value;
+  //   setInput(value);
+  //   setIsOpen(true);
+
+  //   if (value) {
+  //     const results = blogs.filter((blog) =>
+  //       blog.category.toLowerCase().includes(value.toLowerCase())
+  //     );
+  //     setFilteredBlogs(results);
+  //   } else {
+  //     setFilteredBlogs(blogs);
+  //   }
+  // };
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInput(value);
     setIsOpen(true);
-
-    if (value) {
-      const results = blogs.filter((blog) =>
-        blog.category.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredBlogs(results);
-    } else {
-      setFilteredBlogs(blogs);
-    }
+  
+    const results = categories.filter((cat) =>
+      cat.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredBlogs(results); // filtered *categories* now
   };
-
-  const handleSelectSuggestion = (title) => {
-    setInput(title);
+  
+  const handleSelectSuggestion = (category) => {
+    setInput(category);
+    setCatTitle(category); // trigger category-based filter
     setIsOpen(false);
   };
-
+  
   // const handleSearchSubmit = (e) => {
   //   e.preventDefault();
   //   if (input) {
