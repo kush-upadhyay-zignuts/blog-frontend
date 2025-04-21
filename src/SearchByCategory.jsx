@@ -1015,8 +1015,13 @@ function Home() {
 
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && previousPageData.blogs.length === 0) return null;
-    return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
+   return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}${catTitle ? `&category=${catTitle}` : ""}`;
+    ;
   };
+  useEffect(() => {
+    setSize(1); // resets the pagination on new category
+  }, [catTitle]);
+  
 
   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
   const { ref, inView } = useInView();
@@ -1103,6 +1108,7 @@ function Home() {
       </div>
     );
   }
+  const query = category ? { category: new RegExp(`^${category}$`, "i") } : {};
 
   if (error) {
     return (
