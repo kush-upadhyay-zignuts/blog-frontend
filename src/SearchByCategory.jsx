@@ -1062,6 +1062,7 @@ function Home() {
   // Handle suggestion click and update input field
   const handleSelectSuggestion = (category) => {
     setInput(category);
+    setCatTitle(category);
     setIsOpen(false);
 
   };
@@ -1069,10 +1070,10 @@ function Home() {
   // Handle search button click
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (input) {
-      setCatTitle(input)
-    }
-    else{
+    if (!input) {
+    //   setCatTitle(input)
+    // }
+    // else{
               setCatTitle("")
           }
   };
