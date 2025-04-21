@@ -31,11 +31,6 @@ const AdminCategories = () => {
       {/* Assuming partial head and nav are already in your main App Layout */}
       <Navbar/>
       <LeftMenu/>
-      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
-        <div className="spinner-border text-info" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>}
 
       <table id="blog-table" className="mx-auto" style={{marginTop:"5rem"}}>
         <thead>
@@ -63,6 +58,11 @@ const AdminCategories = () => {
         </tbody>
       </table>
 
+          {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+            <div className="spinner-border text-info" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>}
       {/* Assuming partial script is handled globally, so no need to add again */}
     </div>
   );

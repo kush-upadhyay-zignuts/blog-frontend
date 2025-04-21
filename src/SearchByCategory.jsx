@@ -377,7 +377,7 @@ function Home() {
     
       // Optional: Also update state right away
       handleStorageChange();
-    
+      console.log(data)
       return () => {
         window.removeEventListener("storage", handleStorageChange);
       };
