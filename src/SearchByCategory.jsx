@@ -19,6 +19,10 @@ function Home() {
   const autocompleteRef = useRef(null);
   const [loading, setLoading] = useState(true);
 
+  const [bookmarks, setBookmarks] = useState([]);
+
+
+
 
    useEffect(() => {
         const loggedInUser = localStorage.getItem("LoggedInUser");
@@ -26,6 +30,37 @@ function Home() {
           setUser(loggedInUser);
         }                              
       }, []);
+
+
+  const saveToBookmarks = (blogTitle) => {
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (!currentUser) return;
+
+    const key = `bookmarks_${currentUser}`;
+    let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
+
+    if (!updatedBookmarks.includes(blogTitle)) {
+      updatedBookmarks.push(blogTitle);
+      localStorage.setItem(key, JSON.stringify(updatedBookmarks));
+      setBookmarks(updatedBookmarks);
+    }
+  };
+
+  const removeFromBookmarks = (blogTitle) => {
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (!currentUser) return;
+
+    const key = `bookmarks_${currentUser}`;
+    let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
+
+    updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
+    localStorage.setItem(key, JSON.stringify(updatedBookmarks));
+    setBookmarks(updatedBookmarks);
+  };
+
+  const isBookmarked = (blogTitle) => {
+    return bookmarks.includes(blogTitle);
+  };
 
 
   useEffect(() => {
@@ -243,25 +278,25 @@ function Home() {
        { blogs
     .filter(blog => !catTitle || blog.category === catTitle)
     .map((blog, idx) => (
-       
+       <>  
            <Link
             to={`/${blog.title}`}
             key={idx}
             style={{ textDecoration: "none", color: "inherit" }}
-          >
+            >
              <div key={idx} style={{ textDecoration: "none", color: "inherit" }} >
 
           
             <div
               className="d-flex mt-4 mx-auto align-items-center px-5"
               style={{ width: "80rem" }}
-            >
+              >
               <img
                 src={blog.imgUrl}
                 className="card-img-top"
                 style={{ width: "20rem", height: "15rem" }}
                 alt={blog.title}
-              />
+                />
               <div className="card-body ms-5" style={{ width: "50rem" }}>
                 <h5 className="card-title">{blog.title}</h5>
                 <p className="card-text red overflow-hidden">{blog.description}</p>
@@ -270,6 +305,27 @@ function Home() {
             </div>
             </div> 
             </Link>
+              {user && (isBookmarked(blog.title) ? (
+                <div className="d-flex gap-3 mt-2">
+                                  <button className="btn btn-sm btn-success" disabled>
+                                    Saved
+                                  </button>
+                                  <button
+                                    className="btn btn-sm btn-outline-danger"
+                                    onClick={() => removeFromBookmarks(blog.title)}
+                                    >
+                                    Unsave
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                className="btn btn-sm btn-outline-info mt-2"
+                                onClick={() => saveToBookmarks(blog.title)}
+                                >
+                                  Save for Later
+                                </button>
+                              ))}
+                              </>
         )) }
    
       </div>
