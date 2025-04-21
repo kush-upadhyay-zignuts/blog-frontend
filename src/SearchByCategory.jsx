@@ -940,11 +940,13 @@ function Home() {
   const autocompleteRef = useRef(null);
   const [input, setInput] = useState("");
   const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [catTitle,setCatTitle] = useState("")
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
   const [blogs, setBlogs] = useState([]); // State to store all blogs
   const [categories, setCategories] = useState([]); // State to store unique categories
+  const [loading, setLoading] = useState(true);
 
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
@@ -983,11 +985,13 @@ function Home() {
         const response = await fetch("https://blog-backend-1-5vcb.onrender.com/api/blogs");
         const data = await response.json();
         setBlogs(data.blogs);
-        setFilteredBlogs(data.blogs); // Set all blogs as filtered initially
         
         // Extract unique categories from the fetched blogs
-        const uniqueCategories = [...new Set(data.blogs.map(blog => blog.category))];
-        setCategories(uniqueCategories);
+        // const uniqueCategories = [...new Set(data.blogs.map(blog => blog.category))];
+        // setCategories(uniqueCategories);
+        setCategories(data.categories);
+        setFilteredBlogs(data.categories);
+        setLoading(false); 
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
@@ -1022,6 +1026,22 @@ function Home() {
       setBookmarks(saved);
     }
   }, []);
+    useEffect(() => {
+    // Event listener to detect clicks outside of the autocomplete suggestions
+    const handleClickOutside = (event) => {
+      if (autocompleteRef.current && !autocompleteRef.current.contains(event.target)) {
+        SetIsOpen(false); // Close the suggestions if clicked outside
+      }
+    };
+
+    // Add event listener for mouse clicks
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Handle the input change and filter categories
   const handleInputChange = (e) => {
@@ -1031,11 +1051,11 @@ function Home() {
 
     if (value) {
       const results = categories.filter((category) =>
-        category.toLowerCase().includes(value.toLowerCase())
+        category.title.toLowerCase().includes(value.toLowerCase())
       );
-      setFilteredBlogs(blogs.filter(blog => results.includes(blog.category)));  // Filter blogs by categories
+      setFilteredBlogs(results);
     } else {
-      setFilteredBlogs(blogs); // If no input, show all blogs
+      setFilteredBlogs(categories);
     }
   };
 
@@ -1043,15 +1063,18 @@ function Home() {
   const handleSelectSuggestion = (category) => {
     setInput(category);
     setIsOpen(false);
-    setFilteredBlogs(blogs.filter(blog => blog.category === category));  // Filter blogs by selected category
+
   };
 
   // Handle search button click
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (input) {
-      setFilteredBlogs(blogs.filter(blog => blog.category.toLowerCase() === input.toLowerCase())); // Filter blogs by category
+      setCatTitle(input)
     }
+    else{
+              setCatTitle("")
+          }
   };
 
   if (blogs.length === 0) {
@@ -1085,9 +1108,11 @@ function Home() {
                 <form
                   className="d-flex search"
                   autoComplete="off"
+                  d="search-form"
                   onSubmit={handleSearchSubmit}
                 >
                   <input
+                   id="search"
                     className="form-control me-2"
                     type="search"
                     placeholder="Search By Category"
@@ -1098,7 +1123,7 @@ function Home() {
                     Search
                   </button>
                 </form>
-
+{/* 
                 {isOpen && (
                   <ul
                     className="autocomplete overflow-auto"
@@ -1116,6 +1141,21 @@ function Home() {
                         style={{ cursor: "pointer" }}
                       >
                         {category}
+                      </li>
+                    ))}
+                  </ul>
+                )} */}
+                 {isOpen && (
+                  <ul id="autocomplete" className="autocomplete overflow-auto"  ref={autocompleteRef} style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid #ccc", borderRadius: "4px" }}>
+                    
+                    {filteredBlogs.map((blog, idx) => (
+                      <li
+                        key={idx}
+                        onClick={() => handleSelectSuggestion(blog.title)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {blog.title}
+                      
                       </li>
                     ))}
                   </ul>
@@ -1155,9 +1195,16 @@ function Home() {
       </nav>
 
       <LeftMenu />
+      {loading &&  <div className="d-flex align-items-center justify-content-center min-vh-100">
+        <div className="spinner-border text-info" role="status">
+           <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>}
 
       <div className="container" style={{ marginTop: "6rem" }}>
-        {filteredBlogs.map((blog, idx) => (
+        {blogs
+        .filter(blog => !catTitle || blog.category === catTitle)
+         .map((blog, idx) => (
           <div
             className="d-flex mt-4 mx-auto align-items-center px-5"
             style={{ width: "80rem" }}
