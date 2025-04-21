@@ -1062,7 +1062,6 @@ function Home() {
   // Handle suggestion click and update input field
   const handleSelectSuggestion = (category) => {
     setInput(category);
-    setCatTitle(category);
     setIsOpen(false);
 
   };
@@ -1071,9 +1070,9 @@ function Home() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (!input) {
-    //   setCatTitle(input)
-    // }
-    // else{
+      setCatTitle(input)
+    }
+    else{
               setCatTitle("")
           }
   };
@@ -1201,10 +1200,15 @@ function Home() {
            <span className="visually-hidden">Loading...</span>
         </div>
       </div>}
-
+          {console.log("catTitle:", catTitle)}
+{console.log("All blog categories:", blogs.map((b) => b.category))}
       <div className="container" style={{ marginTop: "6rem" }}>
         {blogs
-        .filter(blog => !catTitle || blog.category === catTitle)
+        .filter(
+          (blog) =>
+            !catTitle ||
+            blog.category?.toLowerCase().trim() === catTitle.toLowerCase().trim()
+        )
          .map((blog, idx) => (
           <div
             className="d-flex mt-4 mx-auto align-items-center px-5"
