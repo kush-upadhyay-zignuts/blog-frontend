@@ -271,35 +271,7 @@
 //             </div> 
 //             </Link>
 //         )) }
-//           {/*     
-//            :(blogs.map((blog, idx) => (
-//            <Link
-//             to={`/${blog.title}`}
-//             key={idx}
-//             style={{ textDecoration: "none", color: "inherit" }}
-//           >
-//              <div key={idx} style={{ textDecoration: "none", color: "inherit" }} >
-
-          
-//             <div
-//               className="d-flex mt-4 mx-auto align-items-center px-5"
-//               style={{ width: "80rem" }}
-//             >
-//               <img
-//                 src={`http://localhost:5000${blog.imgUrl}`}
-//                 className="card-img-top"
-//                 style={{ width: "20rem", height: "15rem" }}
-//                 alt={blog.title}
-//               />
-//               <div className="card-body ms-5" style={{ width: "50rem" }}>
-//                 <h5 className="card-title">{blog.title}</h5>
-//                 <p className="card-text red overflow-hidden">{blog.description}</p>
-//                 <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
-//               </div>
-//             </div>
-//             </div> 
-//           </Link>
-//         )))} */}
+   
 //       </div>
 //     </div>
 //   );
@@ -956,9 +928,6 @@
 
 
 
-
-
-
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useSWRInfinite from "swr/infinite";
@@ -976,79 +945,68 @@ function Home() {
   const navigate = useNavigate();
   const autocompleteRef = useRef(null);
   const [input, setInput] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
-  const [catTitle, setCatTitle] = useState("");
 
   const saveToBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-
+  
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-
+  
     if (!updatedBookmarks.includes(blogTitle)) {
       updatedBookmarks.push(blogTitle);
       localStorage.setItem(key, JSON.stringify(updatedBookmarks));
       setBookmarks(updatedBookmarks);
     }
   };
-
+  
   const removeFromBookmarks = (blogTitle) => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (!currentUser) return;
-
+  
     const key = `bookmarks_${currentUser}`;
     let updatedBookmarks = JSON.parse(localStorage.getItem(key)) || [];
-
+  
     updatedBookmarks = updatedBookmarks.filter((title) => title !== blogTitle);
     localStorage.setItem(key, JSON.stringify(updatedBookmarks));
     setBookmarks(updatedBookmarks);
   };
-
+  
   const isBookmarked = (blogTitle) => {
     return bookmarks.includes(blogTitle);
   };
-
+  
+  // Infinite scroll logic
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && previousPageData.blogs.length === 0) return null;
-   return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}${catTitle ? `&category=${catTitle}` : ""}`;
-    ;
+    return `https://blog-backend-1-5vcb.onrender.com/api/blogs?page=${pageIndex + 1}&limit=${PAGE_SIZE}`;
   };
-  useEffect(() => {
-    setSize(1); // resets the pagination on new category
-  }, [catTitle]);
   
-
   const { data, size, setSize, isLoading, error } = useSWRInfinite(getKey, fetcher);
   const { ref, inView } = useInView();
 
-  // Fetch all categories on load
   useEffect(() => {
-    const fetchCategories = async () => {
-      const res = await fetch("https://blog-backend-1-5vcb.onrender.com/api/admin/categories");
-      const data = await res.json();
-      const titles = data.map((cat) => cat.title);
-      setCategories(titles);
-    };
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const loggedInUser = localStorage.getItem("LoggedInUser");
-      if (loggedInUser) {
-        setUser(loggedInUser);
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-    handleStorageChange();
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
-
+        const handleStorageChange = () => {
+          const loggedInUser = localStorage.getItem("LoggedInUser");
+          if (loggedInUser) {
+            setUser(loggedInUser);
+          }
+        };
+      
+        window.addEventListener("storage", handleStorageChange);
+      
+        handleStorageChange();
+      
+        return () => {
+          window.removeEventListener("storage", handleStorageChange);
+        };
+      }, []);
+  
+  // Load bookmarks from localStorage on mount
   useEffect(() => {
     const currentUser = localStorage.getItem("LoggedInUser");
     if (currentUser) {
@@ -1073,6 +1031,7 @@ function Home() {
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -1082,21 +1041,27 @@ function Home() {
     setInput(value);
     setIsOpen(true);
 
-    const results = categories.filter((cat) =>
-      cat.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredCategories(results);
+    if (value) {
+      const results = blogs.filter((blog) =>
+        blog.category.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredBlogs(results);
+    } else {
+      setFilteredBlogs(blogs);
+    }
   };
 
   const handleSelectSuggestion = (category) => {
     setInput(category);
-    setCatTitle(category);
     setIsOpen(false);
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setCatTitle(input || "");
+    if (input) {
+      const filteredBlogsByCategory = blogs.filter(blog => blog.category.toLowerCase() === input.toLowerCase());
+      setFilteredBlogs(filteredBlogsByCategory);
+    }
   };
 
   if (isLoading && blogs.length === 0) {
@@ -1108,7 +1073,6 @@ function Home() {
       </div>
     );
   }
-  const query = category ? { category: new RegExp(`^${category}$`, "i") } : {};
 
   if (error) {
     return (
@@ -1120,17 +1084,27 @@ function Home() {
 
   return (
     <div>
+      {/* Navbar */}
       <nav className="navbar fixed-top navbar-expand-lg nav-color">
         <div className="container-fluid">
           <a className="navbar-brand text-info" href="#">StoryHaven</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+          >
             <span className="navbar-toggler-icon"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <div className="d-flex flex-column">
-                <form className="d-flex search" autoComplete="off" onSubmit={handleSearchSubmit}>
+                <form
+                  className="d-flex search"
+                  autoComplete="off"
+                  onSubmit={handleSearchSubmit}
+                >
                   <input
                     className="form-control me-2"
                     type="search"
@@ -1144,10 +1118,22 @@ function Home() {
                 </form>
 
                 {isOpen && (
-                  <ul className="autocomplete overflow-auto" ref={autocompleteRef} style={{ maxHeight: "200px", border: "1px solid #ccc", borderRadius: "4px" }}>
-                    {filteredCategories.map((cat, idx) => (
-                      <li key={idx} onClick={() => handleSelectSuggestion(cat)} style={{ cursor: "pointer" }}>
-                        {cat}
+                  <ul
+                    className="autocomplete overflow-auto"
+                    ref={autocompleteRef}
+                    style={{
+                      maxHeight: "200px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    {blogs.map((blog, idx) => (
+                      <li
+                        key={idx}
+                        onClick={() => handleSelectSuggestion(blog.category)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {blog.category}
                       </li>
                     ))}
                   </ul>
@@ -1189,31 +1175,56 @@ function Home() {
       <LeftMenu />
 
       <div className="container" style={{ marginTop: "6rem" }}>
-        {blogs
-          .filter(blog => !catTitle || blog.category === catTitle)
-          .map((blog, idx) => (
-            <div className="d-flex mt-4 mx-auto align-items-center px-5" style={{ width: "80rem" }} key={idx}>
-              <Link to={`/${blog.title}`} style={{ textDecoration: "none", color: "inherit" }}>
-                <img src={blog.imgUrl} className="card-img-top" style={{ width: "20rem", height: "15rem" }} alt={blog.title} />
+        {filteredBlogs.map((blog, idx) => (
+          <div
+            className="d-flex mt-4 mx-auto align-items-center px-5"
+            style={{ width: "80rem" }}
+            key={idx}
+          >
+            <Link
+              to={`/${blog.title}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <img
+                src={blog.imgUrl}
+                className="card-img-top"
+                style={{ width: "20rem", height: "15rem" }}
+                alt={blog.title}
+              />
+            </Link>
+            <div className="card-body ms-5" style={{ width: "50rem" }}>
+              <Link
+                to={`/${blog.title}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <h5 className="card-title">{blog.title}</h5>
+                <p className="card-text red overflow-hidden">{blog.description}</p>
+                <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
               </Link>
-              <div className="card-body ms-5" style={{ width: "50rem" }}>
-                <Link to={`/${blog.title}`} style={{ textDecoration: "none", color: "inherit" }}>
-                  <h5 className="card-title">{blog.title}</h5>
-                  <p className="card-text red overflow-hidden">{blog.description}</p>
-                  <p>{new Date(blog.createdAt).toString().slice(0, 25)}</p>
-                </Link>
 
-                {user && (isBookmarked(blog.title) ? (
-                  <div className="d-flex gap-3 mt-2">
-                    <button className="btn btn-sm btn-success" disabled>Saved</button>
-                    <button className="btn btn-sm btn-outline-danger" onClick={() => removeFromBookmarks(blog.title)}>Unsave</button>
-                  </div>
-                ) : (
-                  <button className="btn btn-sm btn-outline-info mt-2" onClick={() => saveToBookmarks(blog.title)}>Save for Later</button>
-                ))}
-              </div>
+              {user && (isBookmarked(blog.title) ? (
+                <div className="d-flex gap-3 mt-2">
+                  <button className="btn btn-sm btn-success" disabled>
+                    Saved
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => removeFromBookmarks(blog.title)}
+                  >
+                    Unsave
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="btn btn-sm btn-outline-info mt-2"
+                  onClick={() => saveToBookmarks(blog.title)}
+                >
+                  Save for Later
+                </button>
+              ))}
             </div>
-          ))}
+          </div>
+        ))}
       </div>
 
       <div ref={ref} className="text-center py-4">
@@ -1230,3 +1241,4 @@ function Home() {
 }
 
 export default Home;
+
