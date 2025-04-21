@@ -54,6 +54,14 @@ function Home() {
   const isBookmarked = (blogTitle) => {
     return bookmarks.includes(blogTitle);
   };
+  useEffect(() => {
+    const currentUser = localStorage.getItem("LoggedInUser");
+    if (!currentUser) return;
+  
+    const key = `bookmarks_${currentUser}`;
+    const saved = JSON.parse(localStorage.getItem(key)) || [];
+    setBookmarks(saved);
+  }, []);
   
   
   useEffect(() => {
