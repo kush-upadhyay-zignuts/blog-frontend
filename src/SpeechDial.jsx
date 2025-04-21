@@ -51,7 +51,7 @@ const SpeechDial = ({ text }) => {
             <button
               className="btn btn-outline-info mb-2"
               onClick={handleResume}
-              style={{width:"1.5rem"}}
+              style={{width:"4rem"}}
             >
                Play
             </button>
@@ -59,12 +59,12 @@ const SpeechDial = ({ text }) => {
             <button
               className="btn btn-outline-info mb-2"
               onClick={handlePause}
-              style={{width:"1.5rem"}}
+              style={{width:"4rem"}}
             >
                Pause
             </button>
           )}
-          <button className="btn btn-outline-danger"  style={{width:"1.5rem"}} onClick={handleCancel}>
+          <button className="btn btn-outline-danger"  style={{width:"4rem"}} onClick={handleCancel}>
              Cancel
           </button>
         </div>
@@ -78,7 +78,7 @@ const SpeechDial = ({ text }) => {
         }}
         title="Listen"
       >
-        🎧
+        🎧 Speak
       </button>
     </div>
   );
