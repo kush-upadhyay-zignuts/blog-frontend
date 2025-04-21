@@ -147,8 +147,10 @@ const SavedBlogs = () => {
   const [bookmarkedTitles, setBookmarkedTitles] = useState([]);
   const [allBlogs, setAllBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [bookmarksLoaded, setBookmarksLoaded] = useState(false);
+  const [blogsLoaded, setBlogsLoaded] = useState(false);
+
 
   useEffect(() => {
     const currentUser = localStorage.getItem("LoggedInUser");
@@ -157,6 +159,7 @@ const SavedBlogs = () => {
       const saved = JSON.parse(localStorage.getItem(key)) || [];
       setBookmarkedTitles(saved);
     }
+     setBookmarksLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -169,8 +172,10 @@ const SavedBlogs = () => {
         setAllBlogs(data.blogs || []);
       } catch (error) {
         console.error("Failed to fetch blogs:", error);
+      }finally {
+        setBlogsLoaded(true); // ✅ Mark done
       }
-    };
+      };  
 
     fetchAllBlogs();
   }, []);
@@ -183,7 +188,7 @@ const SavedBlogs = () => {
       bookmarkedTitles.includes(blog.title)
     );
     setFilteredBlogs(matchedBlogs);
-    setLoading(false); // ✅ Stop loader once filtering is done
+
   }, [bookmarkedTitles, allBlogs]);
 
   const handleGoBack = () => {
@@ -220,6 +225,7 @@ const SavedBlogs = () => {
 //       </>
 //     );
 //   }
+      const loading = !bookmarksLoaded || !blogsLoaded;
 
   return (
     <>
@@ -231,6 +237,16 @@ const SavedBlogs = () => {
       >
         &larr;
       </button>
+        {loading &&      <div className="d-flex align-items-center justify-content-center min-vh-100">
+          <div className="spinner-border text-info" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div> }
+        {!loading && filteredBlogs.length === 0 && <div className="d-flex align-items-center justify-content-center min-vh-100">
+           <h4>No saved blogs found.</h4>
+
+        </div>}
+      {!loading && filteredBlogs.length > 0 && (
       <div className="container mt-5 pt-4">
         <h2 className="mb-4 text-center text-info">Your Saved Blogs</h2>
         {filteredBlogs.map((blog, idx) => (
@@ -265,16 +281,9 @@ const SavedBlogs = () => {
             </div>
           </Link>
         ))}
-        {loading &&      <div className="d-flex align-items-center justify-content-center min-vh-100">
-          <div className="spinner-border text-info" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div> }
-        {!loading && filteredBlogs.length === 0 && <div className="d-flex align-items-center justify-content-center min-vh-100">
-           <h4>No saved blogs found.</h4>
-
-        </div>}
-      </div>
+        </div>
+        )}
+      
     </>
   );
 };
