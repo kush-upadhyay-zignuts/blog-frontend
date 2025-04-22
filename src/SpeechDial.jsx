@@ -43,7 +43,7 @@ const SpeechDial = ({ text }) => {
   return (
     <div
       className="position-fixed"
-      style={{ bottom: "20px", right: "60px", zIndex: 999 }}
+      style={{ bottom: "20px", right: "40px", zIndex: 999 }}
     >
       {isOpen && isSpeaking && (
         <div className="d-flex flex-column align-items-center mb-2">
